@@ -3,31 +3,31 @@ note test.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000044  00800100  0000064c  000006e0  2**0
+  0 .data         000000b4  00800100  0000064c  000006e0  2**0
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         0000064c  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000010  00800144  00800144  00000724  2**0
+  2 .bss          00000010  008001b4  008001b4  00000794  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000724  2**0
+  3 .comment      00000030  00000000  00000000  00000794  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000754  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000007c4  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000068  00000000  00000000  00000794  2**0
+  5 .debug_aranges 00000068  00000000  00000000  00000804  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000b38  00000000  00000000  000007fc  2**0
+  6 .debug_info   00000b8e  00000000  00000000  0000086c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000008dc  00000000  00000000  00001334  2**0
+  7 .debug_abbrev 000008dc  00000000  00000000  000013fa  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000434  00000000  00000000  00001c10  2**0
+  8 .debug_line   00000434  00000000  00000000  00001cd6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000e8  00000000  00000000  00002044  2**2
+  9 .debug_frame  000000e8  00000000  00000000  0000210c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000004b7  00000000  00000000  0000212c  2**0
+ 10 .debug_str    000004d6  00000000  00000000  000021f4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000000f0  00000000  00000000  000025e3  2**0
+ 11 .debug_loc    000000f0  00000000  00000000  000026ca  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000058  00000000  00000000  000026d3  2**0
+ 12 .debug_ranges 00000058  00000000  00000000  000027ba  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -123,13 +123,13 @@ Disassembly of section .text:
   a6:	02 c0       	rjmp	.+4      	; 0xac <__do_copy_data+0x14>
   a8:	07 90       	elpm	r0, Z+
   aa:	0d 92       	st	X+, r0
-  ac:	a4 34       	cpi	r26, 0x44	; 68
+  ac:	a4 3b       	cpi	r26, 0xB4	; 180
   ae:	b1 07       	cpc	r27, r17
   b0:	d9 f7       	brne	.-10     	; 0xa8 <__do_copy_data+0x10>
 
 000000b2 <__do_clear_bss>:
   b2:	21 e0       	ldi	r18, 0x01	; 1
-  b4:	a4 e4       	ldi	r26, 0x44	; 68
+  b4:	a4 eb       	ldi	r26, 0xB4	; 180
   b6:	b1 e0       	ldi	r27, 0x01	; 1
   b8:	01 c0       	rjmp	.+2      	; 0xbc <.do_clear_bss_start>
 
@@ -137,7 +137,7 @@ Disassembly of section .text:
   ba:	1d 92       	st	X+, r1
 
 000000bc <.do_clear_bss_start>:
-  bc:	a4 35       	cpi	r26, 0x54	; 84
+  bc:	a4 3c       	cpi	r26, 0xC4	; 196
   be:	b2 07       	cpc	r27, r18
   c0:	e1 f7       	brne	.-8      	; 0xba <.do_clear_bss_loop>
   c2:	36 d1       	rcall	.+620    	; 0x330 <main>
@@ -163,14 +163,14 @@ void PWM_off() {
   dc:	80 93 6f 00 	sts	0x006F, r24	; 0x80006f <__TEXT_REGION_LENGTH__+0x7e006f>
   e0:	10 92 85 00 	sts	0x0085, r1	; 0x800085 <__TEXT_REGION_LENGTH__+0x7e0085>
   e4:	10 92 84 00 	sts	0x0084, r1	; 0x800084 <__TEXT_REGION_LENGTH__+0x7e0084>
-  e8:	80 91 40 01 	lds	r24, 0x0140	; 0x800140 <_avr_timer_M>
-  ec:	90 91 41 01 	lds	r25, 0x0141	; 0x800141 <_avr_timer_M+0x1>
-  f0:	a0 91 42 01 	lds	r26, 0x0142	; 0x800142 <_avr_timer_M+0x2>
-  f4:	b0 91 43 01 	lds	r27, 0x0143	; 0x800143 <_avr_timer_M+0x3>
-  f8:	80 93 4e 01 	sts	0x014E, r24	; 0x80014e <_avr_timer_cntcurr>
-  fc:	90 93 4f 01 	sts	0x014F, r25	; 0x80014f <_avr_timer_cntcurr+0x1>
- 100:	a0 93 50 01 	sts	0x0150, r26	; 0x800150 <_avr_timer_cntcurr+0x2>
- 104:	b0 93 51 01 	sts	0x0151, r27	; 0x800151 <_avr_timer_cntcurr+0x3>
+  e8:	80 91 b0 01 	lds	r24, 0x01B0	; 0x8001b0 <_avr_timer_M>
+  ec:	90 91 b1 01 	lds	r25, 0x01B1	; 0x8001b1 <_avr_timer_M+0x1>
+  f0:	a0 91 b2 01 	lds	r26, 0x01B2	; 0x8001b2 <_avr_timer_M+0x2>
+  f4:	b0 91 b3 01 	lds	r27, 0x01B3	; 0x8001b3 <_avr_timer_M+0x3>
+  f8:	80 93 be 01 	sts	0x01BE, r24	; 0x8001be <_avr_timer_cntcurr>
+  fc:	90 93 bf 01 	sts	0x01BF, r25	; 0x8001bf <_avr_timer_cntcurr+0x1>
+ 100:	a0 93 c0 01 	sts	0x01C0, r26	; 0x8001c0 <_avr_timer_cntcurr+0x2>
+ 104:	b0 93 c1 01 	sts	0x01C1, r27	; 0x8001c1 <_avr_timer_cntcurr+0x3>
  108:	8f b7       	in	r24, 0x3f	; 63
  10a:	80 68       	ori	r24, 0x80	; 128
  10c:	8f bf       	out	0x3f, r24	; 63
@@ -186,31 +186,31 @@ void PWM_off() {
  11c:	9f 93       	push	r25
  11e:	af 93       	push	r26
  120:	bf 93       	push	r27
- 122:	80 91 4e 01 	lds	r24, 0x014E	; 0x80014e <_avr_timer_cntcurr>
- 126:	90 91 4f 01 	lds	r25, 0x014F	; 0x80014f <_avr_timer_cntcurr+0x1>
- 12a:	a0 91 50 01 	lds	r26, 0x0150	; 0x800150 <_avr_timer_cntcurr+0x2>
- 12e:	b0 91 51 01 	lds	r27, 0x0151	; 0x800151 <_avr_timer_cntcurr+0x3>
+ 122:	80 91 be 01 	lds	r24, 0x01BE	; 0x8001be <_avr_timer_cntcurr>
+ 126:	90 91 bf 01 	lds	r25, 0x01BF	; 0x8001bf <_avr_timer_cntcurr+0x1>
+ 12a:	a0 91 c0 01 	lds	r26, 0x01C0	; 0x8001c0 <_avr_timer_cntcurr+0x2>
+ 12e:	b0 91 c1 01 	lds	r27, 0x01C1	; 0x8001c1 <_avr_timer_cntcurr+0x3>
  132:	01 97       	sbiw	r24, 0x01	; 1
  134:	a1 09       	sbc	r26, r1
  136:	b1 09       	sbc	r27, r1
- 138:	80 93 4e 01 	sts	0x014E, r24	; 0x80014e <_avr_timer_cntcurr>
- 13c:	90 93 4f 01 	sts	0x014F, r25	; 0x80014f <_avr_timer_cntcurr+0x1>
- 140:	a0 93 50 01 	sts	0x0150, r26	; 0x800150 <_avr_timer_cntcurr+0x2>
- 144:	b0 93 51 01 	sts	0x0151, r27	; 0x800151 <_avr_timer_cntcurr+0x3>
+ 138:	80 93 be 01 	sts	0x01BE, r24	; 0x8001be <_avr_timer_cntcurr>
+ 13c:	90 93 bf 01 	sts	0x01BF, r25	; 0x8001bf <_avr_timer_cntcurr+0x1>
+ 140:	a0 93 c0 01 	sts	0x01C0, r26	; 0x8001c0 <_avr_timer_cntcurr+0x2>
+ 144:	b0 93 c1 01 	sts	0x01C1, r27	; 0x8001c1 <_avr_timer_cntcurr+0x3>
  148:	89 2b       	or	r24, r25
  14a:	8a 2b       	or	r24, r26
  14c:	8b 2b       	or	r24, r27
  14e:	99 f4       	brne	.+38     	; 0x176 <__vector_13+0x66>
  150:	81 e0       	ldi	r24, 0x01	; 1
- 152:	80 93 52 01 	sts	0x0152, r24	; 0x800152 <TimerFlag>
- 156:	80 91 40 01 	lds	r24, 0x0140	; 0x800140 <_avr_timer_M>
- 15a:	90 91 41 01 	lds	r25, 0x0141	; 0x800141 <_avr_timer_M+0x1>
- 15e:	a0 91 42 01 	lds	r26, 0x0142	; 0x800142 <_avr_timer_M+0x2>
- 162:	b0 91 43 01 	lds	r27, 0x0143	; 0x800143 <_avr_timer_M+0x3>
- 166:	80 93 4e 01 	sts	0x014E, r24	; 0x80014e <_avr_timer_cntcurr>
- 16a:	90 93 4f 01 	sts	0x014F, r25	; 0x80014f <_avr_timer_cntcurr+0x1>
- 16e:	a0 93 50 01 	sts	0x0150, r26	; 0x800150 <_avr_timer_cntcurr+0x2>
- 172:	b0 93 51 01 	sts	0x0151, r27	; 0x800151 <_avr_timer_cntcurr+0x3>
+ 152:	80 93 c2 01 	sts	0x01C2, r24	; 0x8001c2 <TimerFlag>
+ 156:	80 91 b0 01 	lds	r24, 0x01B0	; 0x8001b0 <_avr_timer_M>
+ 15a:	90 91 b1 01 	lds	r25, 0x01B1	; 0x8001b1 <_avr_timer_M+0x1>
+ 15e:	a0 91 b2 01 	lds	r26, 0x01B2	; 0x8001b2 <_avr_timer_M+0x2>
+ 162:	b0 91 b3 01 	lds	r27, 0x01B3	; 0x8001b3 <_avr_timer_M+0x3>
+ 166:	80 93 be 01 	sts	0x01BE, r24	; 0x8001be <_avr_timer_cntcurr>
+ 16a:	90 93 bf 01 	sts	0x01BF, r25	; 0x8001bf <_avr_timer_cntcurr+0x1>
+ 16e:	a0 93 c0 01 	sts	0x01C0, r26	; 0x8001c0 <_avr_timer_cntcurr+0x2>
+ 172:	b0 93 c1 01 	sts	0x01C1, r27	; 0x8001c1 <_avr_timer_cntcurr+0x3>
  176:	bf 91       	pop	r27
  178:	af 91       	pop	r26
  17a:	9f 91       	pop	r25
@@ -222,14 +222,14 @@ void PWM_off() {
  186:	18 95       	reti
 
 00000188 <TimerSet>:
- 188:	60 93 40 01 	sts	0x0140, r22	; 0x800140 <_avr_timer_M>
- 18c:	70 93 41 01 	sts	0x0141, r23	; 0x800141 <_avr_timer_M+0x1>
- 190:	80 93 42 01 	sts	0x0142, r24	; 0x800142 <_avr_timer_M+0x2>
- 194:	90 93 43 01 	sts	0x0143, r25	; 0x800143 <_avr_timer_M+0x3>
- 198:	60 93 4e 01 	sts	0x014E, r22	; 0x80014e <_avr_timer_cntcurr>
- 19c:	70 93 4f 01 	sts	0x014F, r23	; 0x80014f <_avr_timer_cntcurr+0x1>
- 1a0:	80 93 50 01 	sts	0x0150, r24	; 0x800150 <_avr_timer_cntcurr+0x2>
- 1a4:	90 93 51 01 	sts	0x0151, r25	; 0x800151 <_avr_timer_cntcurr+0x3>
+ 188:	60 93 b0 01 	sts	0x01B0, r22	; 0x8001b0 <_avr_timer_M>
+ 18c:	70 93 b1 01 	sts	0x01B1, r23	; 0x8001b1 <_avr_timer_M+0x1>
+ 190:	80 93 b2 01 	sts	0x01B2, r24	; 0x8001b2 <_avr_timer_M+0x2>
+ 194:	90 93 b3 01 	sts	0x01B3, r25	; 0x8001b3 <_avr_timer_M+0x3>
+ 198:	60 93 be 01 	sts	0x01BE, r22	; 0x8001be <_avr_timer_cntcurr>
+ 19c:	70 93 bf 01 	sts	0x01BF, r23	; 0x8001bf <_avr_timer_cntcurr+0x1>
+ 1a0:	80 93 c0 01 	sts	0x01C0, r24	; 0x8001c0 <_avr_timer_cntcurr+0x2>
+ 1a4:	90 93 c1 01 	sts	0x01C1, r25	; 0x8001c1 <_avr_timer_cntcurr+0x3>
  1a8:	08 95       	ret
 
 000001aa <set_PWM>:
@@ -241,10 +241,10 @@ void PWM_off() {
  1b4:	7c 01       	movw	r14, r24
  1b6:	9b 01       	movw	r18, r22
  1b8:	ac 01       	movw	r20, r24
- 1ba:	60 91 44 01 	lds	r22, 0x0144	; 0x800144 <__data_end>
- 1be:	70 91 45 01 	lds	r23, 0x0145	; 0x800145 <__data_end+0x1>
- 1c2:	80 91 46 01 	lds	r24, 0x0146	; 0x800146 <__data_end+0x2>
- 1c6:	90 91 47 01 	lds	r25, 0x0147	; 0x800147 <__data_end+0x3>
+ 1ba:	60 91 b4 01 	lds	r22, 0x01B4	; 0x8001b4 <__data_end>
+ 1be:	70 91 b5 01 	lds	r23, 0x01B5	; 0x8001b5 <__data_end+0x1>
+ 1c2:	80 91 b6 01 	lds	r24, 0x01B6	; 0x8001b6 <__data_end+0x2>
+ 1c6:	90 91 b7 01 	lds	r25, 0x01B7	; 0x8001b7 <__data_end+0x3>
  1ca:	c5 d0       	rcall	.+394    	; 0x356 <__cmpsf2>
  1cc:	88 23       	and	r24, r24
  1ce:	09 f4       	brne	.+2      	; 0x1d2 <set_PWM+0x28>
@@ -305,10 +305,10 @@ void PWM_off() {
  23c:	61 50       	subi	r22, 0x01	; 1
  23e:	67 bd       	out	0x27, r22	; 39
  240:	16 bc       	out	0x26, r1	; 38
- 242:	c0 92 44 01 	sts	0x0144, r12	; 0x800144 <__data_end>
- 246:	d0 92 45 01 	sts	0x0145, r13	; 0x800145 <__data_end+0x1>
- 24a:	e0 92 46 01 	sts	0x0146, r14	; 0x800146 <__data_end+0x2>
- 24e:	f0 92 47 01 	sts	0x0147, r15	; 0x800147 <__data_end+0x3>
+ 242:	c0 92 b4 01 	sts	0x01B4, r12	; 0x8001b4 <__data_end>
+ 246:	d0 92 b5 01 	sts	0x01B5, r13	; 0x8001b5 <__data_end+0x1>
+ 24a:	e0 92 b6 01 	sts	0x01B6, r14	; 0x8001b6 <__data_end+0x2>
+ 24e:	f0 92 b7 01 	sts	0x01B7, r15	; 0x8001b7 <__data_end+0x3>
  252:	ff 90       	pop	r15
  254:	ef 90       	pop	r14
  256:	df 90       	pop	r13
@@ -339,19 +339,19 @@ void Tick(){
  274:	21 70       	andi	r18, 0x01	; 1
  276:	80 fd       	sbrc	r24, 0
  278:	90 e0       	ldi	r25, 0x00	; 0
- 27a:	90 93 4d 01 	sts	0x014D, r25	; 0x80014d <button1>
+ 27a:	90 93 bd 01 	sts	0x01BD, r25	; 0x8001bd <button1>
     button2 = ~PINA & 0x02;
  27e:	80 b1       	in	r24, 0x00	; 0
  280:	80 95       	com	r24
  282:	82 70       	andi	r24, 0x02	; 2
- 284:	80 93 4c 01 	sts	0x014C, r24	; 0x80014c <button2>
+ 284:	80 93 bc 01 	sts	0x01BC, r24	; 0x8001bc <button2>
     button3 = ~PINA & 0x04;
  288:	80 b1       	in	r24, 0x00	; 0
  28a:	80 95       	com	r24
  28c:	84 70       	andi	r24, 0x04	; 4
- 28e:	80 93 4b 01 	sts	0x014B, r24	; 0x80014b <button3>
+ 28e:	80 93 bb 01 	sts	0x01BB, r24	; 0x8001bb <button3>
     switch(state){
- 292:	80 91 53 01 	lds	r24, 0x0153	; 0x800153 <state>
+ 292:	80 91 c3 01 	lds	r24, 0x01C3	; 0x8001c3 <state>
  296:	81 30       	cpi	r24, 0x01	; 1
  298:	41 f0       	breq	.+16     	; 0x2aa <Tick+0x3c>
  29a:	18 f0       	brcs	.+6      	; 0x2a2 <Tick+0x34>
@@ -361,7 +361,7 @@ void Tick(){
         case start:
             state = wait;
  2a2:	81 e0       	ldi	r24, 0x01	; 1
- 2a4:	80 93 53 01 	sts	0x0153, r24	; 0x800153 <state>
+ 2a4:	80 93 c3 01 	sts	0x01C3, r24	; 0x8001c3 <state>
             break;
  2a8:	1e c0       	rjmp	.+60     	; 0x2e6 <Tick+0x78>
         case wait:
@@ -374,7 +374,7 @@ void Tick(){
  2ae:	d6 df       	rcall	.-84     	; 0x25c <PWM_on>
                 state = loop;
  2b0:	82 e0       	ldi	r24, 0x02	; 2
- 2b2:	80 93 53 01 	sts	0x0153, r24	; 0x800153 <state>
+ 2b2:	80 93 c3 01 	sts	0x01C3, r24	; 0x8001c3 <state>
  2b6:	1e c0       	rjmp	.+60     	; 0x2f4 <Tick+0x86>
             }
             else{
@@ -390,11 +390,11 @@ void Tick(){
             break;
         case loop:
         if(j == 1){
- 2c2:	80 91 49 01 	lds	r24, 0x0149	; 0x800149 <j>
+ 2c2:	80 91 b9 01 	lds	r24, 0x01B9	; 0x8001b9 <j>
  2c6:	81 30       	cpi	r24, 0x01	; 1
  2c8:	a9 f4       	brne	.+42     	; 0x2f4 <Tick+0x86>
             state = wait;
- 2ca:	80 93 53 01 	sts	0x0153, r24	; 0x800153 <state>
+ 2ca:	80 93 c3 01 	sts	0x01C3, r24	; 0x8001c3 <state>
  2ce:	0b c0       	rjmp	.+22     	; 0x2e6 <Tick+0x78>
             state = loop;
         }
@@ -402,7 +402,7 @@ void Tick(){
        
     }
     switch(state){
- 2d0:	80 91 53 01 	lds	r24, 0x0153	; 0x800153 <state>
+ 2d0:	80 91 c3 01 	lds	r24, 0x01C3	; 0x8001c3 <state>
  2d4:	81 30       	cpi	r24, 0x01	; 1
  2d6:	39 f0       	breq	.+14     	; 0x2e6 <Tick+0x78>
  2d8:	18 f0       	brcs	.+6      	; 0x2e0 <Tick+0x72>
@@ -411,22 +411,22 @@ void Tick(){
  2de:	0a c0       	rjmp	.+20     	; 0x2f4 <Tick+0x86>
         case start:
         i = 0;
- 2e0:	10 92 48 01 	sts	0x0148, r1	; 0x800148 <i>
+ 2e0:	10 92 b8 01 	sts	0x01B8, r1	; 0x8001b8 <i>
         break;
  2e4:	08 95       	ret
         case wait:
         i = 0;
- 2e6:	10 92 48 01 	sts	0x0148, r1	; 0x800148 <i>
+ 2e6:	10 92 b8 01 	sts	0x01B8, r1	; 0x8001b8 <i>
         j = 0;
- 2ea:	10 92 49 01 	sts	0x0149, r1	; 0x800149 <j>
+ 2ea:	10 92 b9 01 	sts	0x01B9, r1	; 0x8001b9 <j>
         n = 0;
- 2ee:	10 92 4a 01 	sts	0x014A, r1	; 0x80014a <n>
+ 2ee:	10 92 ba 01 	sts	0x01BA, r1	; 0x8001ba <n>
         break;
  2f2:	08 95       	ret
         case loop:
-        if(i < 16){
- 2f4:	e0 91 48 01 	lds	r30, 0x0148	; 0x800148 <i>
- 2f8:	e0 31       	cpi	r30, 0x10	; 16
+        if(i < 48){
+ 2f4:	e0 91 b8 01 	lds	r30, 0x01B8	; 0x8001b8 <i>
+ 2f8:	e0 33       	cpi	r30, 0x30	; 48
  2fa:	c8 f4       	brcc	.+50     	; 0x32e <Tick+0xc0>
         //if(i < times[9]){  //g24 l20
            set_PWM(gNotes[i]);
@@ -442,17 +442,17 @@ void Tick(){
  30e:	82 81       	ldd	r24, Z+2	; 0x02
  310:	93 81       	ldd	r25, Z+3	; 0x03
  312:	4b df       	rcall	.-362    	; 0x1aa <set_PWM>
-           if(i == 15){
- 314:	80 91 48 01 	lds	r24, 0x0148	; 0x800148 <i>
- 318:	8f 30       	cpi	r24, 0x0F	; 15
+           if(i == 47){
+ 314:	80 91 b8 01 	lds	r24, 0x01B8	; 0x8001b8 <i>
+ 318:	8f 32       	cpi	r24, 0x2F	; 47
  31a:	19 f4       	brne	.+6      	; 0x322 <Tick+0xb4>
                 j = 1;
  31c:	91 e0       	ldi	r25, 0x01	; 1
- 31e:	90 93 49 01 	sts	0x0149, r25	; 0x800149 <j>
+ 31e:	90 93 b9 01 	sts	0x01B9, r25	; 0x8001b9 <j>
            }
            i++;               
  322:	8f 5f       	subi	r24, 0xFF	; 255
- 324:	80 93 48 01 	sts	0x0148, r24	; 0x800148 <i>
+ 324:	80 93 b8 01 	sts	0x01B8, r24	; 0x8001b8 <i>
  328:	08 95       	ret
             set_PWM(0);
         }*/
@@ -460,7 +460,7 @@ void Tick(){
         
         default:
         state = start;
- 32a:	10 92 53 01 	sts	0x0153, r1	; 0x800153 <state>
+ 32a:	10 92 c3 01 	sts	0x01C3, r1	; 0x8001c3 <state>
  32e:	08 95       	ret
 
 00000330 <main>:
@@ -477,8 +477,8 @@ int main(void)
  336:	84 b9       	out	0x04, r24	; 4
  338:	15 b8       	out	0x05, r1	; 5
    
-    TimerSet(200);
- 33a:	68 ec       	ldi	r22, 0xC8	; 200
+    TimerSet(150);
+ 33a:	66 e9       	ldi	r22, 0x96	; 150
  33c:	70 e0       	ldi	r23, 0x00	; 0
  33e:	80 e0       	ldi	r24, 0x00	; 0
  340:	90 e0       	ldi	r25, 0x00	; 0
@@ -489,11 +489,11 @@ int main(void)
     {
         Tick();
  346:	93 df       	rcall	.-218    	; 0x26e <Tick>
- 348:	80 91 52 01 	lds	r24, 0x0152	; 0x800152 <TimerFlag>
+ 348:	80 91 c2 01 	lds	r24, 0x01C2	; 0x8001c2 <TimerFlag>
         while(!TimerFlag){}
  34c:	88 23       	and	r24, r24
  34e:	e1 f3       	breq	.-8      	; 0x348 <main+0x18>
- 350:	10 92 52 01 	sts	0x0152, r1	; 0x800152 <TimerFlag>
+ 350:	10 92 c2 01 	sts	0x01C2, r1	; 0x8001c2 <TimerFlag>
         TimerFlag = 0;
  354:	f8 cf       	rjmp	.-16     	; 0x346 <main+0x16>
 

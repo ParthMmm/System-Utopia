@@ -10,12 +10,24 @@
 /*-------------------------------------------------------------------------*/
 
 #define DATA_BUS PORTD		// port connected to pins 7-14 of LCD display
-#define CONTROL_BUS PORTA	// port connected to pins 4 and 6 of LCD disp.
+#define CONTROL_BUS PORTC	// port connected to pins 4 and 6 of LCD disp.
 #define RS 0			// pin number of uC connected to pin 4 of LCD disp.
 #define E 1			// pin number of uC connected to pin 6 of LCD disp.
 
 /*-------------------------------------------------------------------------*/
+unsigned char u1[8] = { 0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0x1F}; //u
+unsigned char u2[8] = { 0x1F, 0x15, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04}; //t
+unsigned char u3[8] = { 0x1F, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x1F}; //o
+unsigned char u4[8] = { 0x1F, 0x0B, 0x0B, 0x0F, 0x08, 0x08, 0x08, 0x1C}; //p
+unsigned char u5[8] = { 0x00, 0x10, 0x00, 0x10, 0x10, 0x10, 0x10, 0x10}; //i
+unsigned char u6[8] = { 0x1F, 0x1F, 0x13, 0x13, 0x1F, 0x13, 0x13, 0x13}; //A
+unsigned char u7[8] = { 0x0F, 0x08, 0x08, 0x08, 0x0F, 0x01, 0x01, 0x1F}; //s
+unsigned char u8[8] = { 0x00, 0x00, 0x00, 0x11, 0x0A, 0x04, 0x08, 0x10}; //y
+unsigned char u9[8] = { 0x1F, 0x19, 0x1A, 0x1E, 0x1E, 0x1A, 0x19, 0x1F}; //e
+unsigned char u10[8] = {0x11, 0x0A, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15}; //m
 
+void LCD_BuildCharacter(unsigned char loc, unsigned char *msg);
+    
 void LCD_ClearScreen(void) {
    LCD_WriteCommand(0x01);
 }
@@ -28,7 +40,17 @@ void LCD_init(void) {
 	LCD_WriteCommand(0x06);
 	LCD_WriteCommand(0x0f);
 	LCD_WriteCommand(0x01);
-	delay_ms(10);						 
+	
+    delay_ms(10);		
+	LCD_BuildCharacter(0,u1);
+    LCD_BuildCharacter(1,u2);
+    LCD_BuildCharacter(2,u3);
+    LCD_BuildCharacter(3,u4);
+    LCD_BuildCharacter(4,u5);
+    LCD_BuildCharacter(5,u6);
+    LCD_BuildCharacter(6,u7); //s
+    LCD_BuildCharacter(7,u9); //e
+						 
 }
 
 void LCD_WriteCommand (unsigned char Command) {

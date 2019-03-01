@@ -6,6 +6,7 @@
 
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
+#include <avr/interrupt.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 //Functionality - finds the greatest common divisor of two values
@@ -32,5 +33,6 @@ typedef struct _task{
 	unsigned long elapsedTime; 	//Time elapsed since last task tick
 	int (*TickFct)(int); 		//Task tick function
 } task;
+
 
 #endif //SCHEDULER_H

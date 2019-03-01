@@ -9,6 +9,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "piano.h"
 
 
 volatile unsigned char TimerFlag = 0;
@@ -98,20 +99,13 @@ unsigned char button3 = 0;
 
 unsigned char n = 0;
 
-#define A4 440
 
-#define G4 392
-#define FS4 370
-#define CS4 277
-#define B3 247
+double notesDIV[songSize] =        { 0, A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,CS4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,CS5,D5,B4,FS4,B4,A4,A4,A4,A4,A4,A4, 0};
+double notesEON[songSize] =        { 0,A3,C4,E4,G4,A4,A4,A4,A4,G4,G4,G4,G4,A4,E4,E4,E4,E4,C5,B4,G4,E4,D4,B3,C5,B4,G4,E4,D4,B3,D4,G4,E4,E4,E4,E4,D4,D4,D4,C4,B3,A3,A3,A3,A3,A3,A3,A3,C4,E4,G4,A4,A4,A4,A4,G4,G4,G4,G4,A4,E4,E4,E4,E4,C5,B4,G4,E4,D4,B3,C5,B4,G4,E4,D4,B3,D4,G4,E4,E4,E4,E4,D4,D4,D4,E4,C4,B3,A3,A3,A3,A3,A3, 0};
 
-
-#define DS4 311
-#define D4 294
-#define AS3 233
-#define G3 196
-#define DS3 156
-double gNotes[] =       {A4,A4,G4,FS4, CS4,CS4,B3, B3,A4,A4,G4,FS4, CS4,CS4,B3, B3};
+double gNotes[] =       {A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3};
+double eNotes[] = {B6, B6, B6, A6, D6, D6, D6, D6, B7, D6, E6, E6, B7, B7, B7, 0, B7, D6, B7, D6, E6, B7, B7, B7, B6, B6, B6, A6, D6, D6, D6, D6, B7, E6, E6, E6, E6, E6, E6, E6};
+    //double eNotes[] = {B5, B5, B5, A5, D5, D5, D5, D5};
 //double gNotes[] =       {0, A4,A4,G4,FS4, CS4,CS4,B3, B3,A4,A4,G4,FS4, CS4,CS4,B3, B3,A4,A4,G4,FS4, CS4,CS4,B3, B3};
 //double gNotes[] =       {0, A4,A4,G4,FS4,CS4,CS4,B3,B3};
 unsigned char rests[] = {16, 2, 2, 2, 2, 2, 2, 2, 2};
@@ -162,10 +156,10 @@ void Tick(){
         n = 0;
         break;
         case loop:
-        if(i < 16){
+        if(i < 48){
         //if(i < times[9]){  //g24 l20
            set_PWM(gNotes[i]);
-           if(i == 15){
+           if(i == 47){
                 j = 1;
            }
            i++;               
@@ -200,7 +194,7 @@ int main(void)
     DDRA = 0x00; PORTA = 0xFF;
     DDRB = 0xFF; PORTB = 0x00;
    
-    TimerSet(200);
+    TimerSet(150);
     TimerOn();
     while (1) 
     {

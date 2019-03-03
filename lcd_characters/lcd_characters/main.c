@@ -70,14 +70,15 @@ int main(void)
     
     
     LCD_Cursor(0x05);
+    LCD_WriteData(0b10100101);
     
     
-    LCD_WriteData(6);
-    LCD_WriteData(121);
-    LCD_WriteData(6);
-    LCD_WriteData(84);
-    LCD_WriteData(7);
-    LCD_WriteData(77);
+    //LCD_WriteData(6);
+    //LCD_WriteData(121);
+    //LCD_WriteData(6);
+    //LCD_WriteData(84);
+    //LCD_WriteData(7);
+    //LCD_WriteData(77);
     //LCD_DisplayString(7, "ySTEM");
     LCD_Cursor(0x15);
     //LCD_DisplayString(18, "SySTEM");

@@ -7,6 +7,8 @@
 
 #include <avr/io.h>
 #include "timer.h"
+#include "io.c"
+#include "io.h"
 enum States {start, wait, next}state;
     
   
@@ -22,10 +24,13 @@ void Tick(){
         case wait:
         button = ~PINA & 0x01;
         if(button){
-            PORTB = 0x03;
+            LCD_DisplayString(1, "press");
             
         }
-        state = next;
+        else{
+            LCD_DisplayString(1, "no");
+        }
+        
         case next:
         PORTB = 0x00;
         state = start;
@@ -49,7 +54,9 @@ int main(void)
 {
     
     DDRA = 0x00; PORTA = 0xFF;
-    PORTB = 0xFF; PORTB = 0x00;
+    DDRB = 0xFF; PORTB = 0x00;
+    DDRD = 0xFF; PORTD = 0x00;
+    DDRC = 0xFF; PORTC = 0x00;
     /* Replace with your application code */
     TimerSet(1000);
     TimerOn();

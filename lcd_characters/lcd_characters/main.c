@@ -11,7 +11,7 @@
 #include <io.h>
 #include "io.c"
 #include "shift.c"
-
+#include <avr/eeprom.h>
 unsigned char portrOPN[8] = {15, 14, 12, 12, 12, 12, 14, 15};
 // _1111
 // _111_
@@ -51,7 +51,7 @@ unsigned char Character8[8] = { 0x00, 0x0A, 0x1F, 0x1F, 0x0E, 0x04, 0x00, 0x00 }
 int main(void)
 {
     DDRD = 0xFF; PORTD = 0x00;
-    DDRA = 0xFF; PORTA = 0x00;
+    DDRA = 0x00; PORTA = 0xFF;
     DDRB = 0xFF; PORTB = 0x00;
     DDRC = 0xFF; PORTC = 0x00;
     
@@ -70,7 +70,7 @@ int main(void)
     
     
     LCD_Cursor(0x05);
-    LCD_WriteData(0b10100101);
+    LCD_WriteData(0b11);
     
     
     //LCD_WriteData(6);
@@ -117,10 +117,52 @@ int main(void)
     //LCD_BuildCharacter(4, portrMTR); // stores 2nd half of porter mouth to location 0x04
     //LCD_BuildCharacter(5, portrCLS); // stores porter close brace to mem location 0x05
     
+    LCD_ClearScreen();
+  
+    
+    unsigned char m_score = 0;
+    unsigned char x = 2;
+    //a= eeprom_read_byte((uint8_t*)1);
+    
+    unsigned char button;
+    unsigned char buffer [2];
+    //LCD_DisplayString(1,x);
+    LCD_Cursor(2);
+    
+    //itoa(m_score, buffer, 10);
+    //LCD_DisplayString(1, buffer);
+    
+    eeprom_read_block((void*)&buffer, (const void*)1, 5);
+    //x++;
+    ////m_score++;
+    //itoa(x, buffer, 10);
+    //eeprom_write_block ((void*)&buffer, (const void*)1, 5);
+    
+    
+    LCD_DisplayString(1, buffer);
     
     while (1) 
     {
-        //LCD_DisplayString(1, "Hello World");
+        button = ~PINA & 0x01;
+        //LCD_DisplayString(1,buffer);
+        //if(button){
+            //m_score++;
+            //LCD_Cursor(2);
+            //
+            //itoa(m_score, buffer, 10);
+            ////sprintf(buffer, "", m_score);
+            //LCD_DisplayString(1, buffer);
+            //eeprom_write_block ((void*)&buffer, (const void*)1, 5);
+        //} 
+        if(button){
+            x++;
+            
+            itoa(x, buffer, 10);
+            eeprom_write_block ((void*)&buffer, (const void*)1, 5);
+            LCD_DisplayString(1, buffer);
+        }   
+        
+        
     }
 }
 

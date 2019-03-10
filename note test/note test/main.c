@@ -98,20 +98,26 @@ unsigned char button2 = 0;
 unsigned char button3 = 0;
 
 unsigned char n = 0;
+unsigned char noteCount = 0;
+
 
 
 double notesDIV[songSize] =        { 0, A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,CS4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,CS5,D5,B4,FS4,B4,A4,A4,A4,A4,A4,A4, 0};
+unsigned char timesDIV[songSize] = {16,  4,  4,  2,  4,  2,  2,  4,  2,  2,  2, 4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4,  2,  2,  2,  4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4,  2,  2,  2, 4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4, 4, 4,  4, 4, 4, 2, 4, 2, 2, 4, 0};
+unsigned char restsDIV[songSize] = {16,  4,  9,  2,  8,  1,  2,  4,  2,  2,  2, 4, 8, 2, 8, 2, 2, 9, 0, 4,  8,  2,  9,  2,  2,  4,  2,  2,  2,  4, 8, 2, 8, 2, 2, 9, 0, 4,  9,  2,  8,  1,  2,  4,  2,  2,  2, 4, 8, 2, 8, 2, 2, 9, 0, 4,  9,  2,  8,  1,  2,  4, 0, 0,  0, 4, 8, 2, 8, 2, 2, 0,32};
 double notesEON[songSize] =        { 0,A3,C4,E4,G4,A4,A4,A4,A4,G4,G4,G4,G4,A4,E4,E4,E4,E4,C5,B4,G4,E4,D4,B3,C5,B4,G4,E4,D4,B3,D4,G4,E4,E4,E4,E4,D4,D4,D4,C4,B3,A3,A3,A3,A3,A3,A3,A3,C4,E4,G4,A4,A4,A4,A4,G4,G4,G4,G4,A4,E4,E4,E4,E4,C5,B4,G4,E4,D4,B3,C5,B4,G4,E4,D4,B3,D4,G4,E4,E4,E4,E4,D4,D4,D4,E4,C4,B3,A3,A3,A3,A3,A3, 0};
 
-double gNotes[] =       {A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3};
+//double gNotes[] =       {A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3};
 double eNotes[] = {B6, B6, B6, A6, D6, D6, D6, D6, B7, D6, E6, E6, B7, B7, B7, 0, B7, D6, B7, D6, E6, B7, B7, B7, B6, B6, B6, A6, D6, D6, D6, D6, B7, E6, E6, E6, E6, E6, E6, E6};
     //double eNotes[] = {B5, B5, B5, A5, D5, D5, D5, D5};
 //double gNotes[] =       {0, A4,A4,G4,FS4, CS4,CS4,B3, B3,A4,A4,G4,FS4, CS4,CS4,B3, B3,A4,A4,G4,FS4, CS4,CS4,B3, B3};
 //double gNotes[] =       {0, A4,A4,G4,FS4,CS4,CS4,B3,B3};
 unsigned char rests[] = {16, 2, 2, 2, 2, 2, 2, 2, 2};
 unsigned char times[] = {16, 4, 4, 2, 2, 4, 4, 4, 4};                                                                                   
-double lNotes[] = {DS3,DS3,AS3,D4,DS4,G3, G3,AS3,D4,DS4,G3, G3,AS3,D4,DS4,G3, G3,AS3,D4,DS4,};
-
+//double lNotes[] = {DS4,DS4,AS4,D5,DS5,G4, G4,AS4,D5,DS5,G4, G4,AS4,D5,DS5,G4, G4,AS4,D5,DS5,};
+double lNotes[] = {DS4,DS4,DS4, DS4,AS4,AS4, AS4,D5,D5, DS5, DS5,DS5, G4, G4, G4, AS4,AS4, AS4,D5,D5, DS5, DS5,DS5, G4, G4, G4, AS4,AS4, AS4,D5,D5, DS5, DS5,DS5, DS4, DS4, DS4, DS4,AS4,AS4, AS4,D5,D5, DS5, DS5,DS5, G4, G4, G4, AS4,AS4, AS4,D5,D5, DS5, DS5,DS5, G4, G4, G4, AS4,AS4, AS4,D5,D5, DS5, DS5,DS5, DS4, DS4, DS4, DS4 };
+//double gNotes[] = {A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3, A4,A4,A4, G4,FS4, CS4,CS4,CS4,B3, B3, B3};
+double gNotes[] = {A4, A4, A4, G4, G4, FS4, FS4, FS4, CS4, CS4, CS4, CS4, B3, B3, B3, B3, A4, A4, A4, G4, G4, FS4, FS4, FS4, CS4, CS4, CS4, CS4, B3, B3, B3, B3};
 //double lNotes[] = {DS3,DS3,DS3,AS3,AS3,AS3,D4,D4,D4,DS4,DS4,DS4};
 unsigned char j = 0;
 unsigned char i = 0;
@@ -135,14 +141,10 @@ void Tick(){
                 set_PWM(0);
                 
             }
+            state = loop;
             break;
         case loop:
-        if(j == 1){
-            state = wait;
-        }
-        else{
-            state = loop;
-        }
+        state = loop;
         break;
        
     }
@@ -156,16 +158,33 @@ void Tick(){
         n = 0;
         break;
         case loop:
-        if(i < 48){
+        //if(i < timesDIV[noteCount]){
+            if(i < 73){
         //if(i < times[9]){  //g24 l20
-           set_PWM(gNotes[i]);
-           if(i == 47){
-                j = 1;
-           }
-           i++;               
+           set_PWM(lNotes[i]);
+           
+           i++;   
+           noteCount++;            
               
               
         }
+        /*else{
+            if(j < restsDIV[noteCount]){
+                set_PWM(0);
+                j++;
+            }
+            else{
+              i = 0;
+              j = 0;
+              if(noteCount < 73){
+                  noteCount++;
+              }
+              else{
+                  break;
+              }  
+            }
+        }
+        */
         /*else{
             if(j < rests[9]){
                 set_PWM(0);
@@ -194,7 +213,7 @@ int main(void)
     DDRA = 0x00; PORTA = 0xFF;
     DDRB = 0xFF; PORTB = 0x00;
    
-    TimerSet(150);
+    TimerSet(100);
     TimerOn();
     while (1) 
     {

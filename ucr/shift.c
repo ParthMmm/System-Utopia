@@ -1,121 +1,69 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "io.h"
+#include <util/delay_basic.h>
 
-/***************************************
+//BIT OPERATIONS
+#define SET_BIT(p,i) ((p) |= (1 << (i)))
+#define CLR_BIT(p,i) ((p) &= ~(1 << (i)))
+#define GET_BIT(p,i) ((p) & (1 << (i)))
 
-Configure Connections
+//CONNECTIONS
+#define SHIFT_PORT	PORTB
+#define SHIFT_DDR	DDRB
 
-****************************************/
+#define DATA_LINE 0		//Data pin location
 
-#define HC595_PORT   PORTB
-#define HC595_DDR    DDRB
+#define SHIFT_LINE 1	//Shift Clock pin location
+#define STORE_LINE 2	//Store Clock pin location
 
-#define HC595_DS_POS PB0      //Data pin (DS) pin location
 
-#define HC595_SH_CP_POS PB2      //Shift Clock (SH_CP) pin location 
-#define HC595_ST_CP_POS PB1      //Store Clock (ST_CP) pin location
+//Initialize Shift Register
+void ShRegInit() {
+    // Data, Shift clock, Store Clock output
+    SET_BIT(SHIFT_DDR,SHIFT_LINE);
+    SET_BIT(SHIFT_DDR,STORE_LINE);
+    SET_BIT(SHIFT_DDR,DATA_LINE);
+}
 
-/***************************************
-Configure Connections ***ENDS***
-****************************************/
+//Set Data line high
+void ShRegDataHigh() {
+    SET_BIT(SHIFT_PORT,DATA_LINE);
+}
 
-//Initialize HC595 System
+//Set Data line low
+void ShRegDataLow() {
+    CLR_BIT(SHIFT_PORT,DATA_LINE);
+}
 
-void HC595Init()
-{
-   //Make the Data(DS), Shift clock (SH_CP), Store Clock (ST_CP) lines output
-   HC595_DDR|=((1<<HC595_SH_CP_POS)|(1<<HC595_ST_CP_POS)|(1<<HC595_DS_POS));
+//Pulse Shift Clock
+void ShRegPulse() {
+    SET_BIT(SHIFT_PORT,SHIFT_LINE);
+    CLR_BIT(SHIFT_PORT,SHIFT_LINE);
+}
+
+//Pulse Store Clock
+void ShRegLatch() {
+    SET_BIT(SHIFT_PORT,STORE_LINE);
+    _delay_loop_1(1);
+
+    CLR_BIT(SHIFT_PORT,STORE_LINE);
+    _delay_loop_1(1);
 }
 
 
-//Low level macros to change data (DS)lines
-#define HC595DataHigh() (HC595_PORT|=(1<<HC595_DS_POS))
+void ShRegWrite(unsigned char data) {
+    for(unsigned char i=0;i<8;i++) {
+        if(data & 0b10000000) {
+            ShRegDataHigh();
+            } else {
+            ShRegDataLow();
+        }
 
-#define HC595DataLow() (HC595_PORT&=(~(1<<HC595_DS_POS)))
+        ShRegPulse();
+        data=data<<1;
+    }
 
-//Sends a clock pulse on SH_CP line
-void HC595Pulse()
-{
-   //Pulse the Shift Clock
-
-   HC595_PORT|=(1<<HC595_SH_CP_POS);//HIGH
-
-   HC595_PORT&=(~(1<<HC595_SH_CP_POS));//LOW
-
-}
-
-//Sends a clock pulse on ST_CP line
-void HC595Latch()
-{
-   //Pulse the Store Clock
-
-   HC595_PORT|=(1<<HC595_ST_CP_POS);//HIGH
-   _delay_loop_1(1);
-
-   HC595_PORT&=(~(1<<HC595_ST_CP_POS));//LOW
-   _delay_loop_1(1);
-}
-
-
-/*
-
-Main High level function to write a single byte to
-Output shift register 74HC595. 
-
-Arguments:
-   single byte to write to the 74HC595 IC
-
-Returns:
-   NONE
-
-Description:
-   The byte is serially transfered to 74HC595
-   and then latched. The byte is then available on
-   output line Q0 to Q7 of the HC595 IC.
-
-*/
-void HC595Write(uint8_t data)
-{
-   //Send each 8 bits serially
-
-   //Order is MSB first
-   for(uint8_t i=0;i<8;i++)
-   {
-      //Output the data on DS line according to the
-      //Value of MSB
-      if(data & 0b10000000)
-      {
-         //MSB is 1 so output high
-
-         HC595DataHigh();
-      }
-      else
-      {
-         //MSB is 0 so output high
-         HC595DataLow();
-      }
-
-      HC595Pulse();  //Pulse the Clock line
-      data=data<<1;  //Now bring next bit at MSB position
-
-   }
-
-   //Now all 8 bits have been transferred to shift register
-   //Move them to output latch at one
-   HC595Latch();
-}
-
-/*
-
-Simple Delay function approx 0.5 seconds
-
-*/
-
-void Wait()
-{
-   for(uint8_t i=0;i<30;i++)
-   {
-      _delay_loop_2(0);
-   }
+    ShRegLatch();
 }

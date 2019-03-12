@@ -21,23 +21,13 @@
 #include "max7219.h"
 #include "ledmatrix7219d88.h"
 
-//unsigned char u1[8] = { 0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0x1F}; //u
-//unsigned char u2[8] = { 0x1F, 0x15, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04}; //t
-//unsigned char u3[8] = { 0x1F, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x1F}; //o
-//unsigned char u4[8] = { 0x1F, 0x0B, 0x0B, 0x0F, 0x08, 0x08, 0x08, 0x1C}; //p
-//unsigned char u5[8] = { 0x00, 0x10, 0x00, 0x10, 0x10, 0x10, 0x10, 0x10}; //i
-//unsigned char u6[8] = { 0x1F, 0x1F, 0x13, 0x13, 0x1F, 0x13, 0x13, 0x13}; //A
-//unsigned char u7[8] = { 0x0F, 0x08, 0x08, 0x08, 0x0F, 0x01, 0x01, 0x1F}; //s
-//unsigned char u8[8] = { 0x00, 0x00, 0x00, 0x11, 0x0A, 0x04, 0x08, 0x10}; //y
-//unsigned char u9[8] = { 0x1F, 0x19, 0x1A, 0x1E, 0x1E, 0x1A, 0x19, 0x1F}; //e
-//unsigned char u10[8] = {0x11, 0x0A, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15}; //m
     
 unsigned char gvAS[] = {71, 104, 111, 115, 116, 32, 86, 111, 105, 99, 101, 115}; //ghost voices
-unsigned char plAS[] = {80, 108, 97, 121}; //4
-unsigned char hiAS[] = {72, 105, 103, 104, 32, 83, 99, 111, 114, 101}; //10
+unsigned char plAS[] = {80, 108, 97, 121}; //4 play
+unsigned char hiAS[] = {72, 105, 103, 104, 32, 83, 99, 111, 114, 101}; //10 high score
 unsigned char lAS[]  = {76, 105, 111, 110, 104, 101, 97, 114, 116, 101, 100}; //Lionhearted 11
-unsigned char psAS[] = {80, 111, 105, 110, 116, 115, 32, 83, 99, 111, 114, 101, 100, 33};
-unsigned char nAS[] =  {78, 101, 119}; 
+unsigned char psAS[] = {80, 111, 105, 110, 116, 115, 32, 83, 99, 111, 114, 101, 100, 33}; //points scored
+unsigned char nAS[] =  {78, 101, 119};  //new
 unsigned char timesDIV[songSize] = {16,  4,  4,  2,  4,  2,  2,  4,  2,  2,  2, 4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4,  2,  2,  2,  4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4,  2,  2,  2, 4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4, 4, 4,  4, 4, 4, 2, 4, 2, 2, 4, 0};
 
 double notesDIV[songSize] =        { 0, A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,CS4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,CS5,D5,B4,FS4,B4,A4,A4,A4,A4,A4,A4, 0};
@@ -61,7 +51,7 @@ unsigned char lButton[] = {0,  1,  1,  2, 3,  4, 1,  1,  2, 3,  4, 1,  1,  2, 3,
 task tasks[7];
 const unsigned short tasksNum = 7;
 unsigned char tasksPeriod = 5;
-unsigned char square1[] = {0b11000000,0b11000000,0b00000000,0b00000000,0b00000000,0b00000000,0b00000000,0b00000000};
+unsigned char square1[] = {0b00000000,0b00000000,0b00000000,0b00000000,0b00000000,0b00000000,0b00000000,0b00000000};
 
 enum lButton {start, press};
 enum dButton {startD, pressD};
@@ -71,47 +61,48 @@ enum LCD_States {LCDstart, titleScreen, selectSong, selectSongUp, selectSongDown
 enum playSong {startP, play};
 enum matrix {startM, loop1, loop2, loop3, idleState};
     
-unsigned char LFARR[8]={0x00,0x18,0x18,0x18,0x7E,0x3C,0x18,0x00}; //LED Matrix pattern for left arrow
-unsigned char RTARR[8]={0x00,0x18,0x3C,0x7E,0x18,0x18,0x18,0x00}; //LED Matrix pattern for right arrow
-unsigned char DNARR[8]={0x00,0x10,0x30,0x7E,0x7E,0x30,0x10,0x00}; //LED Matrix pattern for down arrow
-unsigned char UPARR[8]={0x00,0x08,0x0C,0x7E,0x7E,0x0C,0x08,0x00}; //LED Matrix pattern for up arrow
    
     
 unsigned char spriteName[] = { 0b11111111,0b10000001,0b10000001,0b10000001,0b10000001,0b10000001,0b10000001,0b11111111};
-unsigned char spriteName2[] = { 0b00000000,0b01111110,0b01000010,0b01000010,0b01000010,0b01000010,0b01111110,0b00000000};
-unsigned char blank[8]={0,0,0,0,0,0,0,0};    
+unsigned char spriteName2[] = { 0b00000000,0b01111110,0b01000010,0b01000010,0b01000010,0b01000010,0b01111110,0b00000000};   
 
     
-unsigned char button;
+
 unsigned char buffer[4];
 unsigned char buffer2[4];
+unsigned char clearBuffer[4] = {0};
 
+unsigned char lHighScore[4];
+unsigned char gHighScore[4];    
 unsigned char gSelected = 0;
 unsigned char lSelected = 0;
+
 unsigned short currentScore = 0;
 unsigned char currentSong;
-unsigned char scoreChange;
+
 unsigned char i,j,n,p = 0;
 unsigned char ii = 0;
-unsigned char songOver = 0;
+
 unsigned char note;
-unsigned char lHighScore[4];
-unsigned char gHighScore[4];
-//unsigned char repeat = 0;
+unsigned char led = 0;
+unsigned char a = 0;
+unsigned char bPlay = 0;
+unsigned char songOver = 0;
+
 
 #define leftButton ~PINA & 0x01
 #define upButton ~PINA & 0x02
 #define downButton ~PINA & 0x04
 #define rtButton ~PINA & 0x08
-unsigned char led = 0;
-unsigned char a = 0;
-unsigned char lm = 0;
-unsigned char bPlay = 0;
+
 unsigned char lfClick = 0;
 unsigned char dnClick = 0;
 unsigned char upClick = 0;
 unsigned char rtClick = 0;
-unsigned char eHighScore = 48;
+
+
+
+
 unsigned char highScoreAchieved = 0;
 
 unsigned char cursorLOC = 0;
@@ -240,9 +231,9 @@ int TickFct_LCD(int state){
 
         break;
         case titleScreen:
-        //delay_ms(3000);
-        if(lfClick){
-            //delay_ms(3000);
+
+        if(rtClick){
+
             state = selectSong;
             LCD_ClearScreen();         
         }
@@ -253,7 +244,7 @@ int TickFct_LCD(int state){
         break;
         
         case selectSong:
-        //delay_ms(50);
+
         if(dnClick && !upClick){  
             state = selectSongDown;
             LCD_ClearScreen();
@@ -262,7 +253,7 @@ int TickFct_LCD(int state){
             state = selectSongUp;
 
         }
-        else if(lfClick){
+        else if(rtClick){
             state = songSelected;
             LCD_ClearScreen();
             gSelected = 1;
@@ -275,7 +266,7 @@ int TickFct_LCD(int state){
         break;
         case selectSongUp:
         delay_ms(100);
-        if(lfClick){
+        if(rtClick){
             state = songSelected;
             LCD_ClearScreen();  
             lSelected = 1;
@@ -298,7 +289,7 @@ int TickFct_LCD(int state){
         break;
         case selectSongDown:
         delay_ms(100);
-        if(lfClick){
+        if(rtClick){
             state = songSelected;
             LCD_ClearScreen();  
             lSelected = 1;
@@ -320,8 +311,12 @@ int TickFct_LCD(int state){
         break; 
         case songSelected:
         delay_ms(100);
-        if(lfClick){
+        if(rtClick){
             state = prepGame;
+            LCD_ClearScreen();
+        }
+        else if(lfClick){
+            state = selectSong;
             LCD_ClearScreen();
         }
         else if(!dnClick && upClick){
@@ -338,13 +333,17 @@ int TickFct_LCD(int state){
         
         case songSelectedUp: //play
         delay_ms(100);
-        if(lfClick){
+        if(rtClick){
             state = prepGame;
+            LCD_ClearScreen();
+        }
+        else if(lfClick){
+            state = selectSong;
             LCD_ClearScreen();
         }
         else if(!dnClick && upClick){
             state = songSelectedUp;
-            //LCD_ClearScreen();
+
         }
         else if(dnClick && !upClick){
             state = songSelectedDown;
@@ -357,9 +356,13 @@ int TickFct_LCD(int state){
         
         case songSelectedDown: //highscore
         delay_ms(100);
-        if(lfClick){
+        if(rtClick){
             state = highScore;
             LCD_ClearScreen();  
+        }
+        else if(lfClick){
+            state = selectSong;
+            LCD_ClearScreen();
         }
         else if(!dnClick && upClick){
             state = songSelectedUp;
@@ -367,7 +370,7 @@ int TickFct_LCD(int state){
         }
         else if(dnClick && !upClick){
             state = songSelectedDown;
-            //LCD_ClearScreen();
+
         }
         else{
             state = songSelectedDown;
@@ -376,7 +379,7 @@ int TickFct_LCD(int state){
         
         case highScore:
         delay_ms(100);
-        if(rtClick){
+        if(lfClick){
             state = songSelected;
             LCD_ClearScreen();  
         }
@@ -411,14 +414,14 @@ int TickFct_LCD(int state){
         break;
         
         case postGame:
-        delay_ms(500);
+        delay_ms(300);
         if(lfClick || rtClick || dnClick || upClick){
             if(highScoreAchieved){
                 state = postGameHS;
             }
             else{
                state = LCDstart;
-               LCD_ClearScreen(); 
+               //LCD_ClearScreen(); 
             }
             LCD_ClearScreen();
         }
@@ -446,8 +449,7 @@ int TickFct_LCD(int state){
     switch(state){ //Actions/////////////
         case LCDstart:
         
-        
-        //LCD_DisplayString(1, buffer);
+        LCD_Cursor(0);
         gSelected = 0;
         lSelected = 0;
         bPlay = 0;
@@ -487,7 +489,7 @@ int TickFct_LCD(int state){
          
          LCD_Cursor(32);
          LCD_WriteData(126);
-         LCD_Cursor(0);;
+         LCD_Cursor(0);
         break;
         
         case selectSong:
@@ -503,6 +505,8 @@ int TickFct_LCD(int state){
         for(unsigned char i = 0; i<11; i++){
             LCD_WriteData(lAS[i]);
         }
+        LCD_Cursor(16);
+        LCD_WriteData(126);
         LCD_Cursor(0);
         
         
@@ -521,8 +525,11 @@ int TickFct_LCD(int state){
         for(unsigned char i = 0; i<11; i++){
             LCD_WriteData(lAS[i]);
         }
+        
+        LCD_Cursor(16);
+        LCD_WriteData(126);
         LCD_Cursor(0);
-        cursorLOC = 1;
+
 
         break;
         
@@ -539,10 +546,10 @@ int TickFct_LCD(int state){
         for(unsigned char i = 0; i<11; i++){
             LCD_WriteData(lAS[i]);
         }
+        LCD_Cursor(32);
+        LCD_WriteData(126);
         LCD_Cursor(0);
-        
-       
-        cursorLOC = 2;
+
         break;
         
         case wait:
@@ -562,6 +569,8 @@ int TickFct_LCD(int state){
         for(unsigned char i = 0; i<10; i++){
             LCD_WriteData(hiAS[i]);
         }
+        LCD_Cursor(16);
+        LCD_WriteData(126);
         LCD_Cursor(0);
         
        
@@ -580,6 +589,8 @@ int TickFct_LCD(int state){
         for(unsigned char i = 0; i<10; i++){
             LCD_WriteData(hiAS[i]);
         }
+        LCD_Cursor(16);
+        LCD_WriteData(126);
         LCD_Cursor(0);
         break;
         
@@ -597,18 +608,14 @@ int TickFct_LCD(int state){
         for(unsigned char i = 0; i<10; i++){
             LCD_WriteData(hiAS[i]);
         }
+        LCD_Cursor(32);
+        LCD_WriteData(126);
         LCD_Cursor(0);
         break;
         
         case highScore:
         delay_ms(100);
-        
-        //LCD_Cursor(4);
-        //for(unsigned char i = 0; i<10; i++){
-            //LCD_WriteData(hiAS[i]);
-        //}
-        
-        //LCD_Cursor(18);
+
         eeprom_read_block((void*)&gHighScore, (const void*)1, 3);
         eeprom_read_block((void*)&lHighScore, (const void*)7, 3);
         
@@ -618,17 +625,16 @@ int TickFct_LCD(int state){
         if(lSelected){
             LCD_DisplayString(1,lHighScore);
         }
-        //LCD_DisplayString(1,buffer);
+
+        LCD_Cursor(32);
+        LCD_WriteData(127);
         LCD_Cursor(0);
 
         break;
         
         case prepGame:
         
-        //LCD_Cursor(1);
-        //for(unsigned char i = 5; i<10; i++){
-            //LCD_WriteData(hiAS[i]);
-        //}
+
         LCD_Cursor(0);
         
         
@@ -645,7 +651,7 @@ int TickFct_LCD(int state){
             eeprom_write_block ((void*)&buffer, (const void*)1, 3);
             highScoreAchieved = 1;
            }           
-           //LCD_DisplayString(1, buffer); 
+        
         }
         if(lSelected){
             itoa(currentScore, buffer2, 10);
@@ -654,8 +660,7 @@ int TickFct_LCD(int state){
              eeprom_write_block ((void*)&buffer2, (const void*)7, 3);  
              highScoreAchieved = 1;
             }
-            
-            //LCD_DisplayString(1, buffer2);
+
         }
         
         LCD_Cursor(17);
@@ -687,7 +692,7 @@ int TickFct_LCD(int state){
         break;
         
         case postGameHS:
-        LCD_Cursor(4);
+        LCD_Cursor(1);
         for(unsigned char i = 0; i<3; i++){
             LCD_WriteData(nAS[i]);
         }
@@ -696,6 +701,8 @@ int TickFct_LCD(int state){
             LCD_WriteData(hiAS[i]);
         }
         LCD_WriteData(33);
+        LCD_Cursor(32);
+        LCD_WriteData(126);
         LCD_Cursor(0);
         break;
 
@@ -834,29 +841,29 @@ int TickFct_matrix(int state){
                  note = gButton[n];
                  
                  if (note == 1){
-                     square1[0] |= 1;
-                     square1[1] |= 1;
+                     square1[0] = square1[0] | 1;
+                     square1[1] = square1[1] | 1;
                      if(lfClick && !rtClick && !dnClick && !upClick){
                          currentScore++;
                      }
                  }
                  else if (note == 2){
-                     square1[2] |= 1;
-                     square1[3] |= 1;
+                     square1[2] = square1[2] | 1;
+                     square1[3] = square1[3] | 1;
                      if(!lfClick && !rtClick && dnClick && !upClick){
                          currentScore++;
                      }
                  }
                  else if (note == 3){
-                     square1[4] |= 1;
-                     square1[5] |= 1;
+                     square1[4] = square1[4] | 1;
+                     square1[5] = square1[5] | 1;
                      if(!lfClick && !rtClick && !dnClick && upClick){
                          currentScore++;
                      }
                  }
                  else if (note == 4){
-                     square1[6] |= 1;
-                     square1[7] |= 1;
+                     square1[6] = square1[6] | 1;
+                     square1[7] = square1[7] | 1;
                      if(!lfClick && rtClick && !dnClick && !upClick){
                          currentScore++;
                      }
@@ -878,29 +885,29 @@ int TickFct_matrix(int state){
                  note = lButton[n];
                  
                  if (note == 1){
-                     square1[0] |= 1;
-                     square1[1] |= 1;
+                     square1[0] = square1[0] | 1;
+                     square1[1] = square1[1] | 1;
                      if(lfClick && !rtClick && !dnClick && !upClick){
                          currentScore++;
                      }
                  }
                  else if (note == 2){
-                     square1[2] |= 1;
-                     square1[3] |= 1;
+                     square1[2] = square1[2] | 1;
+                     square1[3] = square1[3] | 1;
                      if(!lfClick && !rtClick && dnClick && !upClick){
                          currentScore++;
                      }
                  }
                  else if (note == 3){
-                     square1[4] |= 1;
-                     square1[5] |= 1;
+                     square1[4] = square1[4] | 1;
+                     square1[5] = square1[5] | 1;
                      if(!lfClick && !rtClick && !dnClick && upClick){
                          currentScore++;
                      }
                  }
                  else if (note == 4){
-                     square1[6] |= 1;
-                     square1[7] |= 1;
+                     square1[6] = square1[6] | 1;
+                     square1[7] = square1[7] | 1;
                      if(!lfClick && rtClick && !dnClick && !upClick){
                          currentScore++;
                      }
@@ -997,10 +1004,12 @@ int main(void)
     ledmatrix7219d88_init();
     ledmatrix7219d88_setintensity(0,1);
     
+    //eeprom_write_block ((void*)&clearBuffer, (const void*)1, 3);
+    //eeprom_write_block ((void*)&clearBuffer, (const void*)7, 3);
+    
     eeprom_read_block((void*)&gHighScore, (const void*)1, 3);
-    //gHighScore = (void*)&buffer;
     eeprom_read_block((void*)&lHighScore, (const void*)7, 3);
-    //lHighScore = (void*)&buffer2;
+
     
     unsigned char i = 0;
     tasks[i].state = start;
@@ -1029,7 +1038,7 @@ int main(void)
     tasks[i].TickFct = &TickFct_LCD;
     i++;
     tasks[i].state = startP;
-    tasks[i].period = 20;
+    tasks[i].period = 25;
     tasks[i].elapsedTime = 0;
     tasks[i].TickFct = &TickFct_play;
     i++;
@@ -1037,10 +1046,6 @@ int main(void)
     tasks[i].period = 40;
     tasks[i].elapsedTime = 0;
     tasks[i].TickFct = &TickFct_matrix;
-    
- 
-    
-    
     
     
     TimerSet(5);

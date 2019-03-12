@@ -36,6 +36,8 @@ unsigned char gvAS[] = {71, 104, 111, 115, 116, 32, 86, 111, 105, 99, 101, 115};
 unsigned char plAS[] = {80, 108, 97, 121}; //4
 unsigned char hiAS[] = {72, 105, 103, 104, 32, 83, 99, 111, 114, 101}; //10
 unsigned char lAS[]  = {76, 105, 111, 110, 104, 101, 97, 114, 116, 101, 100}; //Lionhearted 11
+unsigned char psAS[] = {80, 111, 105, 110, 116, 115, 32, 83, 99, 111, 114, 101, 100, 33};
+unsigned char nAS[] =  {78, 101, 119}; 
 unsigned char timesDIV[songSize] = {16,  4,  4,  2,  4,  2,  2,  4,  2,  2,  2, 4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4,  2,  2,  2,  4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4,  2,  2,  2, 4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4, 4, 4,  4, 4, 4, 2, 4, 2, 2, 4, 0};
 
 double notesDIV[songSize] =        { 0, A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,CS4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,CS5,D5,B4,FS4,B4,A4,A4,A4,A4,A4,A4, 0};
@@ -65,7 +67,7 @@ enum lButton {start, press};
 enum dButton {startD, pressD};
 enum uButton {startU, pressU};
 enum rButton {startR, pressR};
-enum LCD_States {LCDstart, titleScreen, selectSong, selectSongUp, selectSongDown,songSelected, songSelectedUp, songSelectedDown, prepGame, duringGame, highScore, updateScore, postGame, wait};
+enum LCD_States {LCDstart, titleScreen, selectSong, selectSongUp, selectSongDown,songSelected, songSelectedUp, songSelectedDown, prepGame, duringGame, highScore, postGame, postGameHS, wait};
 enum playSong {startP, play};
 enum matrix {startM, loop1, loop2, loop3, idleState};
     
@@ -82,13 +84,19 @@ unsigned char blank[8]={0,0,0,0,0,0,0,0};
     
 unsigned char button;
 unsigned char buffer[4];
-unsigned char currentSong;
+unsigned char buffer2[4];
+
+unsigned char gSelected = 0;
+unsigned char lSelected = 0;
 unsigned short currentScore = 0;
+unsigned char currentSong;
 unsigned char scoreChange;
 unsigned char i,j,n,p = 0;
 unsigned char ii = 0;
 unsigned char songOver = 0;
 unsigned char note;
+unsigned char lHighScore[4];
+unsigned char gHighScore[4];
 //unsigned char repeat = 0;
 
 #define leftButton ~PINA & 0x01
@@ -104,6 +112,7 @@ unsigned char dnClick = 0;
 unsigned char upClick = 0;
 unsigned char rtClick = 0;
 unsigned char eHighScore = 48;
+unsigned char highScoreAchieved = 0;
 
 unsigned char cursorLOC = 0;
 
@@ -125,13 +134,9 @@ int TickFct_lButton(int state){
         case press:
         if(leftButton){
             lfClick = 1;
-            //LCD_DisplayString(1, "press");
-            
-           
         }
         else{
             lfClick = 0;
-            //LCD_DisplayString(1, "nope");
         }
         break;
         default:
@@ -158,13 +163,9 @@ int TickFct_dButton(int state){
         case pressD:
         if(downButton){
             dnClick = 1;
-            //LCD_DisplayString(1, "press");
-            
-           
         }
         else{
             dnClick = 0;
-            //LCD_DisplayString(1, "nope");
         }
         break;
         default:
@@ -191,14 +192,9 @@ int TickFct_uButton(int state){
         case pressU:
         if(upButton){
             upClick = 1;
-            //LCD_DisplayString(1, "press");
-           
-           
-            
         }
         else{
             upClick = 0;
-            //LCD_DisplayString(1, "nope");
         }
         break;
         default:
@@ -224,15 +220,10 @@ int TickFct_rButton(int state){
         break;
         case pressR:
         if(rtButton){
-            rtClick = 1;
-            //LCD_DisplayString(1, "press");
-            
-            
-            
+            rtClick = 1;   
         }
         else{
             rtClick = 0;
-            //LCD_DisplayString(1, "nope");
         }
         break;
         default:
@@ -245,11 +236,6 @@ int TickFct_LCD(int state){
     switch(state){ //Transitions
         
         case LCDstart:
-        
-        //if(lfClick){
-           //state = titleScreen; 
-           //LCD_ClearScreen();        
-        //}
         state = titleScreen;
 
         break;
@@ -274,12 +260,12 @@ int TickFct_LCD(int state){
         }
         else if(!dnClick && upClick){
             state = selectSongUp;
-            //LCD_ClearScreen();
+
         }
         else if(lfClick){
             state = songSelected;
             LCD_ClearScreen();
-            currentSong = "GV";
+            gSelected = 1;
         }
         else{
             state = selectSong;
@@ -292,7 +278,7 @@ int TickFct_LCD(int state){
         if(lfClick){
             state = songSelected;
             LCD_ClearScreen();  
-            currentSong = "GV";
+            lSelected = 1;
             
         }
         else if(!dnClick && upClick){
@@ -303,8 +289,7 @@ int TickFct_LCD(int state){
         else if(dnClick && !upClick){
             state = selectSongDown;
             LCD_ClearScreen();
-           
-            
+  
         }
         else{
             state = selectSongUp;
@@ -316,9 +301,8 @@ int TickFct_LCD(int state){
         if(lfClick){
             state = songSelected;
             LCD_ClearScreen();  
-            currentSong = "L";
-           
-            
+            lSelected = 1;
+   
         }
         else if(!dnClick && upClick){
             state = selectSongUp;
@@ -331,18 +315,17 @@ int TickFct_LCD(int state){
      
         }
         else{
-            state = selectSongDown;
-            
+            state = selectSongDown; 
         }         
         break; 
         case songSelected:
         delay_ms(100);
         if(lfClick){
             state = prepGame;
+            LCD_ClearScreen();
         }
         else if(!dnClick && upClick){
             state = songSelectedUp;
-            //LCD_ClearScreen();
         }
         else if(dnClick && !upClick){
             state = songSelectedDown;
@@ -357,6 +340,7 @@ int TickFct_LCD(int state){
         delay_ms(100);
         if(lfClick){
             state = prepGame;
+            LCD_ClearScreen();
         }
         else if(!dnClick && upClick){
             state = songSelectedUp;
@@ -404,18 +388,20 @@ int TickFct_LCD(int state){
         
         case prepGame:
         delay_ms(100);
-        if(lfClick){
+        if(p == 10){
            state = duringGame; 
            PWM_on();
            LCD_ClearScreen();
+           bPlay = 1;
         }
         else{
             state = prepGame;
+            p++;
         }
         break;
         
         case duringGame:
-        if(songOver){
+        if(songOver && !bPlay){
             state = postGame;
             LCD_ClearScreen();
         }
@@ -424,12 +410,33 @@ int TickFct_LCD(int state){
         }      
         break;
         
-        case updateScore:
-        
-        
-        state = duringGame;
+        case postGame:
+        delay_ms(500);
+        if(lfClick || rtClick || dnClick || upClick){
+            if(highScoreAchieved){
+                state = postGameHS;
+            }
+            else{
+               state = LCDstart;
+               LCD_ClearScreen(); 
+            }
+            LCD_ClearScreen();
+        }
+        else{
+            state = postGame;
+        }
         break;
         
+        case postGameHS:
+        if(lfClick || rtClick || dnClick || upClick){ 
+            state = LCDstart;
+            LCD_ClearScreen();
+        }
+        else{
+            state = postGameHS;
+        }
+        break;
+
         case wait:
         
         break;
@@ -439,8 +446,19 @@ int TickFct_LCD(int state){
     switch(state){ //Actions/////////////
         case LCDstart:
         
-        delay_ms(30);
+        
         //LCD_DisplayString(1, buffer);
+        gSelected = 0;
+        lSelected = 0;
+        bPlay = 0;
+        songOver = 0;
+        currentScore = 0;
+        p = 0;
+        j = 0;
+        i = 0;
+        ii = 0;
+        n = 0;
+        highScoreAchieved = 0;
         
         break;
         
@@ -465,7 +483,11 @@ int TickFct_LCD(int state){
          LCD_WriteData(3);
          LCD_WriteData(4);
          LCD_WriteData(5);
-         LCD_Cursor(0x00);
+         
+         
+         LCD_Cursor(32);
+         LCD_WriteData(126);
+         LCD_Cursor(0);;
         break;
         
         case selectSong:
@@ -501,13 +523,7 @@ int TickFct_LCD(int state){
         }
         LCD_Cursor(0);
         cursorLOC = 1;
-        
-        for(unsigned char i=0;i<8;i++) {
-            ShRegWrite(128>>i);
-            ShRegWrite(~DNARR[i]);
-            delay_ms(5);
-        }
-       
+
         break;
         
         case selectSongDown:
@@ -587,32 +603,61 @@ int TickFct_LCD(int state){
         case highScore:
         delay_ms(100);
         
-        LCD_Cursor(4);
-        for(unsigned char i = 0; i<10; i++){
-            LCD_WriteData(hiAS[i]);
-        }
-        LCD_Cursor(0);
+        //LCD_Cursor(4);
+        //for(unsigned char i = 0; i<10; i++){
+            //LCD_WriteData(hiAS[i]);
+        //}
         
-        //LCD_DisplayString(18, eHighScore);
+        //LCD_Cursor(18);
+        eeprom_read_block((void*)&gHighScore, (const void*)1, 3);
+        eeprom_read_block((void*)&lHighScore, (const void*)7, 3);
+        
+        if(gSelected){
+            LCD_DisplayString(1,gHighScore);
+        }
+        if(lSelected){
+            LCD_DisplayString(1,lHighScore);
+        }
+        //LCD_DisplayString(1,buffer);
+        LCD_Cursor(0);
+
         break;
         
         case prepGame:
         
-        
-        PWM_on();
-        LCD_Cursor(17);
-        for(unsigned char i = 5; i<10; i++){
-            LCD_WriteData(hiAS[i]);
-        }
+        //LCD_Cursor(1);
+        //for(unsigned char i = 5; i<10; i++){
+            //LCD_WriteData(hiAS[i]);
+        //}
         LCD_Cursor(0);
+        
+        
+        
         break;
         
         case duringGame:
         
-        bPlay = 1;
-        itoa(currentScore, buffer, 10);
-        eeprom_write_block ((void*)&buffer, (const void*)1, 5);
-        LCD_DisplayString(1, buffer);
+        
+        if(gSelected){
+           itoa(currentScore, buffer, 10);
+           LCD_DisplayString(1, buffer);
+           if(atoi(gHighScore) < currentScore){
+            eeprom_write_block ((void*)&buffer, (const void*)1, 3);
+            highScoreAchieved = 1;
+           }           
+           //LCD_DisplayString(1, buffer); 
+        }
+        if(lSelected){
+            itoa(currentScore, buffer2, 10);
+            LCD_DisplayString(1, buffer2); 
+            if(atoi(lHighScore) < currentScore){
+             eeprom_write_block ((void*)&buffer2, (const void*)7, 3);  
+             highScoreAchieved = 1;
+            }
+            
+            //LCD_DisplayString(1, buffer2);
+        }
+        
         LCD_Cursor(17);
         for(unsigned char i = 5; i<10; i++){
             LCD_WriteData(hiAS[i]);
@@ -621,29 +666,39 @@ int TickFct_LCD(int state){
         
               
         break;
-        
-        case updateScore:
-        //LCD_Cursor(24);
-        
-        //currentScore++;
-        
-        //itoa(currentScore, buffer, 10);
-        //eeprom_write_block ((void*)&buffer, (const void*)1, 5);
-        //LCD_DisplayString(1, buffer);
-        //LCD_Cursor(17);
-        //for(unsigned char i = 5; i<10; i++){
-            //LCD_WriteData(hiAS[i]);
-        //}
-        //LCD_Cursor(0);
-        break;
-        
+  
         case postGame:
-        LCD_DisplayString(1,"game over");
-        state = titleScreen;
-        LCD_ClearScreen();
-        break;
-       
         
+        if(gSelected){
+            LCD_DisplayString(1,itoa(currentScore, buffer, 10));
+        }
+        if(lSelected){
+            LCD_DisplayString(1,buffer2);
+        }
+        LCD_Cursor(17);
+        for(unsigned char i = 0; i<14; i++){
+            LCD_WriteData(psAS[i]);
+        }
+        
+        LCD_Cursor(32);
+        LCD_WriteData(126);
+        LCD_Cursor(0);
+
+        break;
+        
+        case postGameHS:
+        LCD_Cursor(4);
+        for(unsigned char i = 0; i<3; i++){
+            LCD_WriteData(nAS[i]);
+        }
+        LCD_Cursor(17);
+        for(unsigned char i = 0; i<10; i++){
+            LCD_WriteData(hiAS[i]);
+        }
+        LCD_WriteData(33);
+        LCD_Cursor(0);
+        break;
+
         default:
         break;
     }
@@ -666,6 +721,10 @@ int TickFct_play(int state){
        case play:
        state = play;
        break;
+       
+       default:
+       state = startP;
+       break;
     }
     switch(state){
         case startP:
@@ -676,31 +735,56 @@ int TickFct_play(int state){
         
         break;
         case play:
-        
-        if(ii < gTimes[n]){
-            set_PWM(gNotes[n]);
-            ii++;
-      
-        }
-        else{
-            if(j < gRest[n]){
-                set_PWM(0);
-					++j;
+        if(gSelected){
+            if(ii < gTimes[n]){
+                set_PWM(gNotes[n]);
+                ii++;
+                
             }
             else{
-                ii = 0;
-                j = 0;
-                if(n < 40){ //fix
-                    n++;
+                if(j < gRest[n]){
+                    set_PWM(0);
+                    ++j;
                 }
                 else{
-                    PWM_off();
-                    songOver = 1;
-                    bPlay = 0;
-                }                    
+                    ii = 0;
+                    j = 0;
+                    if(n < 40){ //fix
+                        n++;
+                    }
+                    else{
+                        PWM_off();
+                        songOver = 1;
+                        bPlay = 0;
+                    }
+                }
             }
         }
-        
+        if(lSelected){
+            if(ii < lTimes[n]){
+                set_PWM(lNotes[n]);
+                ii++;
+                
+            }
+            else{
+                if(j < lRest[n]){
+                    set_PWM(0);
+                    ++j;
+                }
+                else{
+                    ii = 0;
+                    j = 0;
+                    if(n < 20){ //fix
+                        n++;
+                    }
+                    else{
+                        PWM_off();
+                        songOver = 1;
+                        bPlay = 0;
+                    }
+                }
+            }
+        }
         break;
         
         default:
@@ -711,92 +795,129 @@ int TickFct_play(int state){
 
 int TickFct_matrix(int state){
     switch(state){
-        case startM:
-        delay_ms(10);
-        state = idleState;
-        //state = loop1;
-        break;
         
-        case loop1:
-        delay_ms(10);
-        if(songOver){
-            state = idleState;
-        }
-        else{
-            state = loop1;
-        }
-        break;
         
         case idleState:
-        
         if(bPlay){
             state = loop1;
         }
         else{
-            
-            state = idleState;
-            
-        }
+            state = idleState;  
+        }   
+        break;
         
+        case loop1:
+        delay_ms(10);
+        if(songOver && !bPlay){
+            state = idleState;
+        }
+        else{
+            state = loop1;
+        }
         break;
         default:
-        state = startM;
+        state = idleState;
         break;
-        
-        
+
     }
      switch(state){
-         case startM:
          
-         break;
          case loop1:
          
-         for(unsigned char k = 0; k < 8;k++) {
-             square1[k] = square1[k] << 1;
-             
-         }
-         if (i < gTimes[n]) {
-             note = gButton[n];
-             
-             if (note == 1) {
+          for(unsigned char k = 0; k < 8;k++) {
+              square1[k] = square1[k] << 1;
+              
+          }
+         
+         if(gSelected){
+             if (i < gTimes[n]) {
+                 note = gButton[n];
+                 
+                 if (note == 1){
                      square1[0] |= 1;
                      square1[1] |= 1;
                      if(lfClick && !rtClick && !dnClick && !upClick){
                          currentScore++;
                      }
-             } 
-             else if (note == 2) {
+                 }
+                 else if (note == 2){
                      square1[2] |= 1;
                      square1[3] |= 1;
                      if(!lfClick && !rtClick && dnClick && !upClick){
                          currentScore++;
                      }
-             } 
-             else if (note == 3) {
+                 }
+                 else if (note == 3){
                      square1[4] |= 1;
                      square1[5] |= 1;
                      if(!lfClick && !rtClick && !dnClick && upClick){
                          currentScore++;
                      }
-             } 
-             else if (note == 4) {
+                 }
+                 else if (note == 4){
                      square1[6] |= 1;
                      square1[7] |= 1;
                      if(!lfClick && rtClick && !dnClick && !upClick){
                          currentScore++;
                      }
+                 }
+                 ++i;
              }
-             
-             ++i;
-             } 
              else {
-             if (j < lRest[n]) {
-                 ++j;
-                 } else {
-                 i = 0;
-                 j = 0;
+                 if (j < gRest[n]){
+                     ++j;
+                 }
+                 else{
+                     i = 0;
+                     j = 0;
+                 }
              }
          }
+         if(lSelected){
+             if (i < lTimes[n]) {
+                 note = lButton[n];
+                 
+                 if (note == 1){
+                     square1[0] |= 1;
+                     square1[1] |= 1;
+                     if(lfClick && !rtClick && !dnClick && !upClick){
+                         currentScore++;
+                     }
+                 }
+                 else if (note == 2){
+                     square1[2] |= 1;
+                     square1[3] |= 1;
+                     if(!lfClick && !rtClick && dnClick && !upClick){
+                         currentScore++;
+                     }
+                 }
+                 else if (note == 3){
+                     square1[4] |= 1;
+                     square1[5] |= 1;
+                     if(!lfClick && !rtClick && !dnClick && upClick){
+                         currentScore++;
+                     }
+                 }
+                 else if (note == 4){
+                     square1[6] |= 1;
+                     square1[7] |= 1;
+                     if(!lfClick && rtClick && !dnClick && !upClick){
+                         currentScore++;
+                     }
+                 }
+                 ++i;
+             }
+             else {
+                 if (j < lRest[n]){
+                     ++j;
+                 }
+                 else{
+                     i = 0;
+                     j = 0;
+                 }
+             }
+         }
+         
          ledmatrix7219d88_setmatrix(0, square1);
            
          break;
@@ -840,23 +961,17 @@ int TickFct_matrix(int state){
                      _delay_ms(450);
                  }
              }
-             
-             
+
              else if(upClick){
-                 
-                 ledmatrix7219d88_resetmatrix(0);
                  for(led = 64; led >0; led-=8){
                      ledmatrix7219d88_setledon(i, led);
-                     //ledmatrix7219d88_setledon(i, led++);
                      _delay_ms(450);
                  }
                  _delay_ms(500);
                  for(led = 64; led > 0; led-=8){
                      ledmatrix7219d88_setledoff(i, led);
-                     //ledmatrix7219d88_setledoff(i, led++);
                      _delay_ms(450);
-                 }
-                 ledmatrix7219d88_resetmatrix(0);
+                 }   
              }
              else{
                  ledmatrix7219d88_resetmatrix(0);
@@ -865,10 +980,9 @@ int TickFct_matrix(int state){
          break;
          
          default:
+         
          break;
-         
-         
-         
+ 
      }
     return state;
 }
@@ -882,9 +996,13 @@ int main(void)
     
     ledmatrix7219d88_init();
     ledmatrix7219d88_setintensity(0,1);
-    unsigned char i = 0;
-    eeprom_read_block((void*)&buffer, (const void*)1, 5);
     
+    eeprom_read_block((void*)&gHighScore, (const void*)1, 3);
+    //gHighScore = (void*)&buffer;
+    eeprom_read_block((void*)&lHighScore, (const void*)7, 3);
+    //lHighScore = (void*)&buffer2;
+    
+    unsigned char i = 0;
     tasks[i].state = start;
     tasks[i].period = 40;
     tasks[i].elapsedTime = 0;
@@ -911,14 +1029,15 @@ int main(void)
     tasks[i].TickFct = &TickFct_LCD;
     i++;
     tasks[i].state = startP;
-    tasks[i].period = 30;
+    tasks[i].period = 20;
     tasks[i].elapsedTime = 0;
     tasks[i].TickFct = &TickFct_play;
     i++;
-    tasks[i].state = startM;
+    tasks[i].state = idleState;
     tasks[i].period = 40;
     tasks[i].elapsedTime = 0;
     tasks[i].TickFct = &TickFct_matrix;
+    
  
     
     
@@ -939,6 +1058,6 @@ int main(void)
       while(!TimerFlag);
       TimerFlag = 0;  
       
-      sleep_mode();
+      //sleep_mode();
     }
 }

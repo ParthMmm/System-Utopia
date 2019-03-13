@@ -1,3 +1,16 @@
+#ifndef __pwm_h__
+#define __pwm_h__
+
+#define B3  247
+#define CS4 277
+#define DS4 311
+#define FS4 370
+#define G4  392
+#define A4  440
+#define AS4 466
+#define D5  587
+#define DS5 622
+
 void set_PWM(double frequency) {
     static double current_frequency; // Keeps track of the currently set frequency
     // Will only update the registers when the frequency changes, otherwise allows
@@ -34,3 +47,5 @@ void PWM_off() {
     TCCR0A = 0x00;
     TCCR0B = 0x00;
 }
+
+#endif

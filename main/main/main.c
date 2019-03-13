@@ -8,12 +8,13 @@
 #include <avr/io.h>
 #include <avr/sleep.h>
 #include <timer.h>
-#include <io.h>
+#include "io.h"
 #include "io.c"
-#include "shift.c"
 #include "scheduler.h"
 #include "pwm.h"
-#include "piano.h"
+#include <avr/io.h>
+#include <util/delay.h>
+#include <util/delay_basic.h>
 #include <avr/eeprom.h>
 
 #include "max7219.c"
@@ -28,24 +29,24 @@ unsigned char hiAS[] = {72, 105, 103, 104, 32, 83, 99, 111, 114, 101}; //10 high
 unsigned char lAS[]  = {76, 105, 111, 110, 104, 101, 97, 114, 116, 101, 100}; //Lionhearted 11
 unsigned char psAS[] = {80, 111, 105, 110, 116, 115, 32, 83, 99, 111, 114, 101, 100, 33}; //points scored
 unsigned char nAS[] =  {78, 101, 119};  //new
-unsigned char timesDIV[songSize] = {16,  4,  4,  2,  4,  2,  2,  4,  2,  2,  2, 4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4,  2,  2,  2,  4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4,  2,  2,  2, 4, 4, 2, 4, 2, 2, 4, 8, 4,  4,  2,  4,  2,  2,  4, 4, 4,  4, 4, 4, 2, 4, 2, 2, 4, 0};
 
-double notesDIV[songSize] =        { 0, A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,CS4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,FS4,A4,D4,D4,D4,D4,D4,D4,D4,A4,FS4,FS4,FS4,FS4,FS4,CS5,D5,B4,FS4,B4,A4,A4,A4,A4,A4,A4, 0};
-// double gNotes[] =       {0,A4,A4,G4,FS4,CS4,CS4,B3,B3,A4,A4,A4,A4,G4,FS4,CS4,CS4,B3,B3,A4,A4,A4,A4,G4,FS4,CS4,CS4,B3,B3,A4,A4};
- unsigned char restsDIV[songSize] = {16,  4,  9,  2,  8,  1,  2,  4,  2,  2,  2, 4, 8, 2, 8, 2, 2, 9, 0, 4,  8,  2,  9,  2,  2,  4,  2,  2,  2,  4, 8, 2, 8, 2, 2, 9, 0, 4,  9,  2,  8,  1,  2,  4,  2,  2,  2, 4, 8, 2, 8, 2, 2, 9, 0, 4,  9,  2,  8,  1,  2,  4, 0, 0,  0, 4, 8, 2, 8, 2, 2, 0,32};
-  
 
-double gNotes[] =       {0,A4,A4,A4,G4,FS4,CS4,CS4,CS4,B3,B3,B3,A4,A4,A4,G4,FS4,CS4,CS4,CS4,B3,B3,B3,A4,A4,A4,G4,FS4,CS4,CS4,CS4,B3,B3,B3,A4,A4,A4,G4,FS4,CS4,CS4,CS4,B3,B3,B3};
-unsigned char gTimes[] ={8, 6, 6, 6, 4,  4,  6,  6,   6,4, 4, 4, 6, 6, 6, 4,  4,  6,  6,   6,4, 4, 4, 6, 6, 6, 4,  4,  6,  6,   6,4, 4, 4, 6, 6, 6, 4,  4,  6,  6,  6,4, 4, 4};
-unsigned char gRest[] = {8, 0, 0, 0, 1,  0,  1,  0,  0, 1, 0, 0, 0, 0, 0, 1,  0,  1,  0,  0, 1, 0, 0, 1, 0, 0, 1,  0,  1,  0,  0, 1, 0, 0, 1, 0, 0, 1,  0,  4,  0,  0, 0, 0, 0}; 
-unsigned char gButton[]={0, 1, 1, 1, 2,  3,  4,  4,  4, 2, 2, 2, 1, 1, 1, 2,  3,  4,  4,  4, 2, 2, 2, 1, 1, 1, 2,  3,  4,  4,  4, 2, 2, 2, 1, 1, 1, 2,  3,  4,  4,  4, 2, 2, 2};
+double gNotes[] =       {0,A4,A4,A4,G4,FS4,CS4,CS4,CS4,B3,B3,B3,A4,A4,A4,G4,FS4,CS4,CS4,CS4,B3,B3,B3,A4,A4,A4,G4,FS4,CS4,CS4,CS4,B3,B3,B3,A4,A4,A4,G4,FS4,CS4,CS4,CS4,B3,B3,B3,0};
+unsigned char gTimes[] ={8, 6, 6, 6, 4,  4,  6,  6,   6,4, 4, 4, 6, 6, 6, 4,  4,  6,  6,   6,4, 4, 4, 6, 6, 6, 4,  4,  6,  6,   6,4, 4, 4, 6, 6, 6, 4,  4,  6,  6,  6,4, 4, 4, 8};
+//unsigned char gRest[] = {8, 0, 0, 0, 2,  0,  2,  0,  0, 2, 0, 0, 0, 0, 0, 2,  0,  2,  0,  0, 2, 0, 0, 2, 0, 0, 2,  0,  2,  0,  0, 2, 0, 0, 2, 0, 0, 2,  0,  2,  0,  0, 0, 0, 0};
+unsigned char gRest[] = {8, 0, 0, 0, 0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0,  0, 0, 0, 0, 8};
+    
+//unsigned char gRest[] = {8, 0, 0, 0, 6,  0,  6,  0,  0, 6, 0, 0, 0, 0, 0, 6,  0,  6,  0,  0, 6, 0, 0, 6, 0, 0, 6,  0,  6,  0,  0, 6, 0, 0, 6, 0, 0, 6,  0,  6,  0,  0, 0, 0, 0};
+//unsigned char gRest[] = {8, 1, 1, 1, 6,  1,  6,  1,  1, 6, 1, 1, 1, 1, 1, 6,  1,  6,  1,  1, 6, 1, 1, 6, 1, 1, 6,  1,  6,  1,  1, 6, 1, 1, 6, 1, 1, 6,  1,  6,  1,  1, 1, 1, 1};
+ 
+unsigned char gButton[]={0, 1, 1, 1, 2,  3,  4,  4,  4, 2, 2, 2, 1, 1, 1, 2,  3,  4,  4,  4, 2, 2, 2, 1, 1, 1, 2,  3,  4,  4,  4, 2, 2, 2, 1, 1, 1, 2,  3,  4,  4,  4, 2, 2, 2, 0};
 
     
 //double lNotes[] =         {0,DS3,DS3,AS3,D4,DS4,G3, G3,AS3,D4,DS4,G3, G3,AS3,D4,DS4,G3, G3,AS3,D4,DS4};
-double lNotes[] =         {0,DS4,DS4,DS4,DS4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,G4,G4,G4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,G4,G4,G4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,DS4,DS4,DS4,DS4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,G4,G4,G4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,G4,G4,G4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,DS4,DS4,DS4,DS4};
-unsigned char lTimes[] =  {8,  6,  6,  4, 4,  4, 6,  6,  4, 4,  4, 6,  6,  4, 4,  4, 6,  6,  4, 4,  4};
-unsigned char lRest[] =   {8,  0,  4,  4, 4,  4, 0,  4,  4, 4,  4, 0,  4,  4, 4,  4, 0,  4,  0, 0,  0};
-unsigned char lButton[] = {0,  1,  1,  2, 3,  4, 1,  1,  2, 3,  4, 1,  1,  2, 3,  4, 1,  1,  2, 3,  4};
+double lNotes[] =         {0,DS4,DS4,DS4,DS4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,G4,G4,G4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,G4,G4,G4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,DS4,DS4,DS4,DS4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,G4,G4,G4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,G4,G4,G4,AS4,AS4,AS4,D5,D5,DS5,DS5,DS5,DS4,DS4,DS4,DS4,0};
+unsigned char lTimes[] =  {8,  4,  4,  4, 4,  2, 4,  4,  2, 2,  2, 4,  4,  2, 2,  2, 4,  4,  2, 2,  2,  2,  4,  4, 2, 2, 2,  4,  4,  2, 2,  2, 2,  4,  4,  4,  4,  2, 2,  2, 4,  4,  2, 2,  2, 4,  4,  2, 2,  2, 4,  4,  2, 2,  2,  2,  4,  4, 2, 2, 2,  4,  4,  2, 2,  2, 2,  4,  4,  4,  4,  4,  4,8};
+unsigned char lRest[] =   {8,  0,  0,  0, 0,  0, 0,  0,  0, 0,  0, 0,  0,  0, 0,  0, 0,  0,  0, 0,  0,  0,  0,  0, 0, 0,  0, 0,  0,  0, 0, 0,  0,  0,  0,  0,  0,  0, 0,  0, 0,  0,  0, 0,  0, 0,  0,  0, 0,  0, 0,  0,  0, 0,  0,  0,  0,  0, 0, 0,  0, 0,  0,  0, 0, 0,  0,  0,  0,  0,  0,  0,  0,8};
+unsigned char lButtons[] ={0,  1,  1,  1, 1,  2,   2,  2, 3, 3,  4, 4,   4, 1, 1, 1,  2,  2,  2, 3, 3,  4,  4,  4, 1, 1, 1, 2,  2,  2, 3,  3,  4,  4,  4,  1,  1,  1, 1,  2,   2,  2, 3, 3,  4, 4,   4, 1, 1, 1,  2,  2,  2, 3, 3,  4,  4,  4, 1, 1, 1, 2,  2,  2, 3,  3,  4,  4,  4,  1,  1,  1,  1,0};
 
     
 task tasks[7];
@@ -756,7 +757,7 @@ int TickFct_play(int state){
                 else{
                     ii = 0;
                     j = 0;
-                    if(n < 40){ //fix
+                    if(n < 46){ //fix
                         n++;
                     }
                     else{
@@ -781,7 +782,7 @@ int TickFct_play(int state){
                 else{
                     ii = 0;
                     j = 0;
-                    if(n < 20){ //fix
+                    if(n < 80){ //fix
                         n++;
                     }
                     else{
@@ -882,7 +883,7 @@ int TickFct_matrix(int state){
          }
          if(lSelected){
              if (i < lTimes[n]) {
-                 note = lButton[n];
+                 note = lButtons[n];
                  
                  if (note == 1){
                      square1[0] = square1[0] | 1;
@@ -1043,7 +1044,7 @@ int main(void)
     tasks[i].TickFct = &TickFct_play;
     i++;
     tasks[i].state = idleState;
-    tasks[i].period = 40;
+    tasks[i].period = 45;
     tasks[i].elapsedTime = 0;
     tasks[i].TickFct = &TickFct_matrix;
     

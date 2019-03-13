@@ -208,7 +208,7 @@ void ledmatrix7219d88_setintensity(uint8_t ledmatrix, uint8_t intensity) {
 00000136 <TickFct_dButton>:
      136:	02 97       	sbiw	r24, 0x02	; 2
      138:	68 f4       	brcc	.+26     	; 0x154 <TickFct_dButton+0x1e>
-     13a:	02 99       	sbic	0x00, 2	; 0
+     13a:	01 99       	sbic	0x00, 1	; 0
      13c:	06 c0       	rjmp	.+12     	; 0x14a <TickFct_dButton+0x14>
      13e:	81 e0       	ldi	r24, 0x01	; 1
      140:	80 93 c9 04 	sts	0x04C9, r24	; 0x8004c9 <dnClick>
@@ -226,7 +226,7 @@ void ledmatrix7219d88_setintensity(uint8_t ledmatrix, uint8_t intensity) {
 0000015a <TickFct_uButton>:
      15a:	02 97       	sbiw	r24, 0x02	; 2
      15c:	68 f4       	brcc	.+26     	; 0x178 <TickFct_uButton+0x1e>
-     15e:	01 99       	sbic	0x00, 1	; 0
+     15e:	02 99       	sbic	0x00, 2	; 0
      160:	06 c0       	rjmp	.+12     	; 0x16e <TickFct_uButton+0x14>
      162:	81 e0       	ldi	r24, 0x01	; 1
      164:	80 93 c8 04 	sts	0x04C8, r24	; 0x8004c8 <upClick>
@@ -853,7 +853,7 @@ void ledmatrix7219d88_setintensity(uint8_t ledmatrix, uint8_t intensity) {
      6ea:	8e e1       	ldi	r24, 0x1E	; 30
      6ec:	90 e0       	ldi	r25, 0x00	; 0
      6ee:	ca dd       	rcall	.-1132   	; 0x284 <delay_ms>
-     6f0:	85 e0       	ldi	r24, 0x05	; 5
+     6f0:	86 e0       	ldi	r24, 0x06	; 6
      6f2:	e7 dd       	rcall	.-1074   	; 0x2c2 <LCD_Cursor>
      6f4:	86 e0       	ldi	r24, 0x06	; 6
      6f6:	ed dd       	rcall	.-1062   	; 0x2d2 <LCD_WriteData>
@@ -867,7 +867,7 @@ void ledmatrix7219d88_setintensity(uint8_t ledmatrix, uint8_t intensity) {
      706:	e5 dd       	rcall	.-1078   	; 0x2d2 <LCD_WriteData>
      708:	8d e4       	ldi	r24, 0x4D	; 77
      70a:	e3 dd       	rcall	.-1082   	; 0x2d2 <LCD_WriteData>
-     70c:	85 e1       	ldi	r24, 0x15	; 21
+     70c:	86 e1       	ldi	r24, 0x16	; 22
      70e:	d9 dd       	rcall	.-1102   	; 0x2c2 <LCD_Cursor>
      710:	80 e0       	ldi	r24, 0x00	; 0
      712:	df dd       	rcall	.-1090   	; 0x2d2 <LCD_WriteData>

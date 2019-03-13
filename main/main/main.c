@@ -91,9 +91,9 @@ unsigned char bPlay = 0;
 unsigned char songOver = 0;
 
 
-#define leftButton ~PINA & 0x01
-#define upButton ~PINA & 0x02
-#define downButton ~PINA & 0x04
+#define lfButton ~PINA & 0x01
+#define upButton ~PINA & 0x04
+#define dnButton ~PINA & 0x02
 #define rtButton ~PINA & 0x08
 
 unsigned char lfClick = 0;
@@ -124,7 +124,7 @@ int TickFct_lButton(int state){
         case start:
         break;
         case press:
-        if(leftButton){
+        if(lfButton){
             lfClick = 1;
         }
         else{
@@ -153,7 +153,7 @@ int TickFct_dButton(int state){
         case startD:
         break;
         case pressD:
-        if(downButton){
+        if(dnButton){
             dnClick = 1;
         }
         else{
@@ -469,7 +469,7 @@ int TickFct_LCD(int state){
          delay_ms(30);
          
          //System
-         LCD_Cursor(0x05);
+         LCD_Cursor(6);
          LCD_WriteData(6);
          LCD_WriteData(121);
          LCD_WriteData(6);
@@ -477,7 +477,7 @@ int TickFct_LCD(int state){
          LCD_WriteData(7);
          LCD_WriteData(77);
        
-         LCD_Cursor(0x15);
+         LCD_Cursor(22);
          
          //Utopia
          LCD_WriteData(0);

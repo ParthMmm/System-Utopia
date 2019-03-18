@@ -1,7 +1,8 @@
-button_test/
-lcd_characters/
-matrix/
-matrix2
-moreNores
-newMatrix 
-note_test
+/button_test/*
+/lcd_characters/*
+/matrix/*
+/matrix2/*
+/moreNores/*
+/newMatrix/*
+/note_test/*
+	

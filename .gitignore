@@ -58,3 +58,17 @@ dkms.conf
 /moreNotes/*
 /newMatrix/*
 /note_test/*
+
+*.atsln
+*.atsuo
+*.xml
+*.cproj
+*.d
+*.eep
+*.elf
+*.hex
+*.lss
+*.map
+*.o
+*.srec
+*.mk

@@ -28,6 +28,8 @@ enum States{startP, wait, loop} ;
 
 unsigned char button1 = 0;
 unsigned char button2 = 0;
+
+
 unsigned char button3 = 0;
 task tasks[3];
 const unsigned short tasksNum = 3;

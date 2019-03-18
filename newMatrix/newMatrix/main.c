@@ -36,6 +36,9 @@ int main(void){
     
     unsigned char LFARR[8]={0x00,0x18,0x18,0x18,0x7E,0x3C,0x18,0x00}; //LED Matrix pattern for left arrow
     unsigned char blank[8]={0,0,0,0,0,0,0,0};
+        
+        
+        
     
     ledmatrix7219d88_setmatrix(0, rows);
     while(1){

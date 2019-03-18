@@ -139,6 +139,7 @@ int main(void)
     //eeprom_write_block ((void*)&buffer, (const void*)1, 5);
     
     
+    
     LCD_DisplayString(1, buffer);
     
     while (1) 

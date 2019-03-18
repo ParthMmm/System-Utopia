@@ -313,6 +313,7 @@ void ShRegWrite(unsigned char data) {
 
     ShRegLatch();
 }
+
 int main(void){
     ShRegInit();
     DDRB = 0x00; PORTA = 0xFF;

@@ -43,6 +43,8 @@ void ShRegPulse() {
     CLR_BIT(SHIFT_PORT,SHIFT_LINE);
 }
 
+
+
 //Pulse Store Clock
 void ShRegLatch() {
     SET_BIT(SHIFT_PORT,STORE_LINE);

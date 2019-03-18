@@ -55,6 +55,6 @@ dkms.conf
 /lcd_characters/*
 /matrix/*
 /matrix2/*
-/moreNores/*
+/moreNotes/*
 /newMatrix/*
 /note_test/*

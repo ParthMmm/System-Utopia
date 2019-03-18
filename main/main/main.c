@@ -75,7 +75,7 @@ unsigned char lSelected = 0;
 unsigned short currentScore = 0;
 unsigned char currentSong;
 
-unsigned char i,j,n,p = 0;
+unsigned char i,j,n,p,y,z = 0;
 unsigned char ii = 0;
 
 unsigned char note;
@@ -94,9 +94,6 @@ unsigned char lfClick = 0;
 unsigned char dnClick = 0;
 unsigned char upClick = 0;
 unsigned char rtClick = 0;
-
-
-
 
 unsigned char highScoreAchieved = 0;
 
@@ -455,6 +452,8 @@ int TickFct_LCD(int state){
         i = 0;
         ii = 0;
         n = 0;
+        y = 0;
+        z = 0;
         highScoreAchieved = 0;
         
         break;
@@ -734,6 +733,7 @@ int TickFct_play(int state){
         ii = 0;
         j = 0;
         n = 0;
+        z = 0;
         
         break;
         case play:
@@ -744,14 +744,14 @@ int TickFct_play(int state){
                 
             }
             else{
-                if(j < gRest[n]){
+                if(z < gRest[n]){
                     set_PWM(0);
-                    ++j;
+                    z++;
                 }
                 else{
                     ii = 0;
-                    j = 0;
-                    if(n < gSize){ //fix
+                    z = 0;
+                    if(n < gSize){
                         n++;
                     }
                     else{
@@ -769,14 +769,14 @@ int TickFct_play(int state){
                 
             }
             else{
-                if(j < lRest[n]){
+                if(z < lRest[n]){
                     set_PWM(0);
-                    ++j;
+                    z++;
                 }
                 else{
                     ii = 0;
-                    j = 0;
-                    if(n < lSize){ //fix
+                    z = 0;
+                    if(n < lSize){ 
                         n++;
                     }
                     else{
@@ -826,13 +826,13 @@ int TickFct_matrix(int state){
          
          case loop1:
          
-          for(unsigned char k = 0; k < 8;k++) {
-              square1[k] = square1[k] << 1;
+          for(unsigned char i = 0; i < 8;i++) {
+              square1[i] = square1[i] << 1;
               
           }
          
          if(gSelected){
-             if (i < gTimes[n]) {
+             if (y < gTimes[n]) {
                  note = gButton[n];
                  
                  if (note == 1){
@@ -863,20 +863,20 @@ int TickFct_matrix(int state){
                          currentScore++;
                      }
                  }
-                 ++i;
+                 y++;
              }
              else {
-                 if (j < gRest[n]){
-                     ++j;
+                 if (z < gRest[n]){
+                     z++;
                  }
                  else{
-                     i = 0;
-                     j = 0;
+                     y = 0;
+                     z = 0;
                  }
              }
          }
          if(lSelected){
-             if (i < lTimes[n]) {
+             if (y < lTimes[n]) {
                  note = lButtons[n];
                  
                  if (note == 1){
@@ -907,15 +907,15 @@ int TickFct_matrix(int state){
                          currentScore++;
                      }
                  }
-                 ++i;
+                 y++;
              }
              else {
-                 if (j < lRest[n]){
-                     ++j;
+                 if (z < lRest[n]){
+                     z++;
                  }
                  else{
-                     i = 0;
-                     j = 0;
+                     y = 0;
+                     z = 0;
                  }
              }
          }

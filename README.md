@@ -1,11 +1,11 @@
 # System-Utopia
-CS120B Project
 
-A music rhythm game similar to Guitar Hero or Dance Dance Revolution programmed on an Atmega1284 microcontroller. The two songs featured are
+
+A music rhythm game similar to Guitar Hero or Dance Dance Revolution programmed on an Atmega1284 microcontroller.
+The two songs featured are
 Lionhearted by Porter Robinson and Ghost Voice by Virtual Self.
 
-
-##Technologies & Components
+## Technologies & Components
 Atmel Studio 7
 ATmega1284
 Four Adafruit mini led arcade buttons

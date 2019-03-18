@@ -6,7 +6,7 @@ The two songs featured are
 Lionhearted by Porter Robinson and Ghost Voice by Virtual Self.
 
 
-![alt text](https://imgur.com/sLusEk1)
+![alt text](https://i.imgur.com/sLusEk1.jpg)
 
 ## Technologies & Components
 * Atmel Studio 7
